@@ -3,3 +3,8 @@ node_modules/
 .env
 *.pyc
 __pycache__/
+extract_shoes.py
+SHOPIFY_DEPLOYMENT_GUIDE.md
+server.js
+package.json
+package-lock.json
