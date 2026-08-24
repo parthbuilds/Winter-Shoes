@@ -1,0 +1,48 @@
+{% comment %}
+  Footwear Card Snippet
+  Clean SSENSE-styled card with dual-image hover transition and instant detail view trigger.
+{% endcomment %}
+
+{% assign p_category = product.category | default: product.type | default: 'Sneakers' | downcase %}
+{% assign img_1 = product.featured_image | default: product.image %}
+{% assign img_2 = product.secondary_image | default: product.images[1] | default: img_1 %}
+
+<div 
+  class="product-grid-card group flex flex-col justify-between p-6 bg-white border border-[#e8e8e8] rounded-xl cursor-pointer shoe-card-item"
+  data-category="{{ p_category }}"
+  data-product-id="{{ product.id }}"
+  onclick="window.showProductDetail('{{ product.id }}')"
+>
+  <!-- Card Image Showcase with Dual-Image Hover Swap -->
+  <div class="relative w-full aspect-[4/3] flex items-center justify-center overflow-hidden my-4">
+    <!-- Primary Image -->
+    <img 
+      src="{{ img_1 }}" 
+      alt="{{ product.title | escape }}" 
+      class="img-primary absolute inset-0 w-full h-full object-contain p-4 transition-all duration-500 ease-out"
+      loading="lazy"
+    />
+    <!-- Secondary Angle Image on Hover -->
+    <img 
+      src="{{ img_2 }}" 
+      alt="{{ product.title | escape }} alternate angle" 
+      class="img-secondary absolute inset-0 w-full h-full object-contain p-4 transition-all duration-500 ease-out"
+      loading="lazy"
+    />
+  </div>
+
+  <!-- Product Meta -->
+  <div class="mt-4 pt-3 border-t border-[#f0f0f0]">
+    <div class="flex justify-between items-baseline mb-1">
+      <h3 class="text-xs font-black tracking-wider uppercase text-[#111111] group-hover:text-black">
+        {{ product.brand | default: product.vendor | default: product.title }}
+      </h3>
+      <span class="text-xs font-bold text-[#111111] ml-2 whitespace-nowrap">
+        {{ product.price | money }}
+      </span>
+    </div>
+    <p class="text-[11px] text-[#777777] font-medium truncate">
+      {{ product.subtitle | default: product.title }}
+    </p>
+  </div>
+</div>

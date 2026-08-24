@@ -1,0 +1,217 @@
+{% comment %}
+  Section: Footwear Product Detail View (SSENSE Frames 022 - 050)
+  Smoothly morphs from Hero Carousel with top floating shoe and bottom HUD,
+  revealing detailed studio gallery on scroll with specs and accordions.
+{% endcomment %}
+
+<section 
+  id="product-detail-section"
+  class="relative w-full min-h-screen bg-[#ededed] text-[#111111] hidden opacity-0 transition-opacity duration-500 pb-24 px-6 md:px-12"
+  data-section-id="{{ section.id }}"
+  data-section-type="footwear-product-detail"
+>
+  <div class="max-w-[1680px] mx-auto w-full">
+    
+    <!-- TOP STAGE (Frames 025 - 029): Floating shoe + Bottom Product HUD -->
+    <div id="detail-top-stage" class="min-h-[75vh] flex flex-col justify-between py-4">
+      
+      <!-- Top Floating Shoe Stage -->
+      <div class="relative w-full flex items-center justify-center my-auto min-h-[380px]">
+        <!-- Sibling Blurred Shoe Behind in 3D -->
+        <div class="absolute right-1/4 top-1/2 -translate-y-1/2 opacity-35 blur-md pointer-events-none scale-75 hidden md:block">
+          <img id="detail-sibling-float" src="" alt="Sibling shoe preview" class="w-64 h-64 object-contain" />
+        </div>
+
+        <!-- Center Active Floating Shoe -->
+        <div id="detail-active-shoe-box" class="relative max-w-[460px] w-full aspect-[4/3] flex items-center justify-center">
+          <div class="shoe-shadow-disc"></div>
+          <img 
+            id="detail-main-float-img" 
+            src="" 
+            alt="Product visual" 
+            class="w-full h-full object-contain drop-shadow-2xl transition-transform duration-500"
+          />
+        </div>
+      </div>
+
+      <!-- Bottom Product HUD (Frames 025 - 029) -->
+      <div id="product-detail-hud" class="grid grid-cols-1 md:grid-cols-12 gap-6 items-end pt-4 pb-8 border-b border-[#dedede] transition-all duration-500">
+        
+        <!-- Left: Brand Title + Outline SHOES + Subtitle -->
+        <div class="md:col-span-7 space-y-1">
+          <div class="flex items-baseline gap-3 flex-wrap">
+            <h1 id="detail-brand-title" class="text-3xl md:text-5xl font-black tracking-tight text-[#111111] uppercase font-sans">
+              PALM ANGELS
+            </h1>
+            <span class="text-3xl md:text-5xl font-black text-outline-brand">
+              SHOES
+            </span>
+          </div>
+          <p id="detail-shoe-subtitle" class="text-xs md:text-sm font-semibold text-[#777777]">
+            Black & White Flame Sneakers
+          </p>
+        </div>
+
+        <!-- Right: Price, Color dots, Size dropdown, Add to Cart, Heart -->
+        <div class="md:col-span-5 flex flex-col items-start md:items-end space-y-4">
+          <div class="flex items-center gap-6">
+            <!-- Colorway selection dots -->
+            <div class="flex items-center space-x-2">
+              <button class="w-5 h-5 rounded-full bg-[#3d7a42] border-2 border-white ring-1 ring-black/20 cursor-pointer" title="Green"></button>
+              <button class="w-5 h-5 rounded-full bg-[#dbe84a] border-2 border-white ring-1 ring-black/20 cursor-pointer" title="Yellow"></button>
+            </div>
+
+            <!-- Size Dropdown -->
+            <div class="relative">
+              <select 
+                id="shoe-size-dropdown"
+                class="appearance-none bg-white border border-[#cccccc] hover:border-[#111111] text-[#111111] text-xs font-bold py-2 pl-3.5 pr-8 rounded-lg cursor-pointer focus:outline-none transition-colors"
+              >
+                <option value="39">Size 39</option>
+                <option value="40">Size 40</option>
+                <option value="41">Size 41</option>
+                <option value="42">Size 42</option>
+                <option value="43" selected>Size 43 ▾</option>
+                <option value="44">Size 44</option>
+                <option value="45">Size 45</option>
+                <option value="46">Size 46</option>
+              </select>
+              <span class="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-xs text-[#555555]">
+                ▾
+              </span>
+            </div>
+
+            <!-- Price in Large Bold -->
+            <div id="detail-shoe-price" class="text-2xl md:text-4xl font-black text-[#111111] tracking-tight">
+              395$
+            </div>
+          </div>
+
+          <!-- Add to Cart + Heart Action Row -->
+          <div class="flex items-center gap-3 w-full md:w-auto">
+            <button 
+              id="detail-add-cart-action"
+              type="button" 
+              class="btn-pill-add-cart flex-1 md:flex-initial"
+            >
+              <span>ADD TO CART</span>
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+              </svg>
+            </button>
+
+            <button 
+              type="button" 
+              class="w-10 h-10 rounded-full border border-[#cccccc] bg-white hover:border-[#111111] flex items-center justify-center text-[#111111] transition-colors cursor-pointer"
+              aria-label="Wishlist"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- BOTTOM DETAILED SECTION (Frames 039 - 050): Gallery Photos on Left + Info & Accordions on Right -->
+    <div id="detail-scroll-gallery" class="grid grid-cols-1 lg:grid-cols-12 gap-12 pt-12 items-start">
+      
+      <!-- LEFT: Detailed High-Res Studio Photos (Front view, Heel view with Palm Angels logo badge) -->
+      <div class="lg:col-span-7 space-y-8">
+        <!-- Photo 1: Front Angles Studio Photo -->
+        <div class="w-full aspect-[4/3] bg-white rounded-xl border border-[#dedede] flex items-center justify-center p-8 shadow-sm">
+          <img 
+            id="gallery-img-front"
+            src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=1000&q=80" 
+            alt="Front studio perspective" 
+            class="max-h-[420px] w-full object-contain drop-shadow-xl"
+          />
+        </div>
+
+        <!-- Photo 2: Back Heel Logo Badge Studio Photo -->
+        <div class="w-full aspect-[4/3] bg-white rounded-xl border border-[#dedede] flex items-center justify-center p-8 shadow-sm">
+          <img 
+            id="gallery-img-heel"
+            src="https://images.unsplash.com/photo-1514989940723-e8e51635b782?auto=format&fit=crop&w=1000&q=80" 
+            alt="Heel studio perspective" 
+            class="max-h-[420px] w-full object-contain drop-shadow-xl"
+          />
+        </div>
+      </div>
+
+      <!-- RIGHT: Product Description Paragraph + Collapsible Accordions (Details, Delivery, Reviews) -->
+      <div class="lg:col-span-5 space-y-6 lg:sticky lg:top-28">
+        
+        <!-- Description Text -->
+        <div class="space-y-3">
+          <p id="detail-full-description" class="text-xs text-[#555555] leading-relaxed font-normal">
+            Low-top panelled suede and canvas sneakers in white and red. Semi-transparent rubberized trim at round toe. Logo pattern at white lace-up closure. Graphic leather applique in green at side. Rubberized trim in red and black at soles and heel.
+          </p>
+        </div>
+
+        <!-- Accordions (Frames 045 - 050) -->
+        <div class="border-t border-[#dedede] pt-2 space-y-3">
+          <!-- Accordion 1: Details -->
+          <div class="border-b border-[#dedede] pb-3">
+            <button type="button" class="ssense-acc-header w-full flex justify-between items-center text-xs font-bold text-[#111111] py-1 cursor-pointer">
+              <span>Details</span>
+              <span class="acc-arrow text-xs text-[#888888]">⌵</span>
+            </button>
+            <div class="ssense-acc-body text-xs text-[#666666] space-y-1.5 mt-2.5">
+              <p>• Upper: Suede, Leather & Technical Canvas.</p>
+              <p>• Sole: Molded vulcanized rubber.</p>
+              <p>• Padded low-cut collar with reinforced heel cup.</p>
+              <p>• Made in Italy.</p>
+            </div>
+          </div>
+
+          <!-- Accordion 2: Free Delivery and Returns -->
+          <div class="border-b border-[#dedede] pb-3">
+            <button type="button" class="ssense-acc-header w-full flex justify-between items-center text-xs font-bold text-[#111111] py-1 cursor-pointer">
+              <span>Free Delivery and Returns</span>
+              <span class="acc-arrow text-xs text-[#888888]">⌵</span>
+            </button>
+            <div class="ssense-acc-body hidden text-xs text-[#666666] space-y-1.5 mt-2.5">
+              <p>• Express international delivery by DHL.</p>
+              <p>• Complimentary 30-day returns with prepaid shipping label.</p>
+            </div>
+          </div>
+
+          <!-- Accordion 3: Reviews -->
+          <div class="border-b border-[#dedede] pb-3">
+            <button type="button" class="ssense-acc-header w-full flex justify-between items-center text-xs font-bold text-[#111111] py-1 cursor-pointer">
+              <span>Reviews (28)</span>
+              <span class="acc-arrow text-xs text-[#888888]">⌵</span>
+            </button>
+            <div class="ssense-acc-body hidden text-xs text-[#666666] space-y-2 mt-2.5">
+              <div class="bg-white p-3 rounded-lg border border-[#dedede]">
+                <div class="flex justify-between text-[11px] font-bold text-[#111111] mb-1">
+                  <span>Marc D. (Verified Buyer)</span>
+                  <span class="text-amber-500">★★★★★</span>
+                </div>
+                <p class="text-[11px] text-[#666666]">"The flame silhouette looks incredible with loose trousers. Extremely comfortable footbed."</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Footwear Product Detail",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Footwear Product Detail"
+    }
+  ]
+}
+{% endschema %}

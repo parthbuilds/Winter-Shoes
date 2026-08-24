@@ -1,0 +1,358 @@
+{% comment %}
+  Section: Footwear Hero 3D Carousel & Responsive Detail View
+  - Mobile: Categories in Slide-out Drawer, 100% Height Centered Carousel, Description below HUD
+  - Desktop: Sidebar on left margin, 3D Depth Floating Carousel, Sticky Details Frame on Right beside Tall Studio Cards
+{% endcomment %}
+
+<section 
+  id="hero-carousel-section"
+  class="relative w-full min-h-[88vh] bg-[#ededed] text-[#111111] flex flex-col justify-between py-4 md:py-6 px-4 md:px-12 transition-all duration-500"
+  data-section-id="{{ section.id }}"
+  data-section-type="footwear-hero-carousel"
+>
+
+  <!-- DESKTOP LEFT SIDEBAR: Hidden on Mobile (housed in mobile sliding drawer) -->
+  <div id="hero-left-sidebar" class="hidden lg:block lg:absolute lg:left-10 lg:top-8 z-30 space-y-6 pt-2 transition-all duration-500">
+    
+    <!-- Search Input -->
+    <div class="relative max-w-[180px]">
+      <span class="absolute inset-y-0 left-0 flex items-center pointer-events-none text-xs text-[#888888]">
+        ⌕
+      </span>
+      <input 
+        type="text" 
+        id="hero-search-input"
+        placeholder="RECHERCHER" 
+        class="w-full pl-5 pr-2 py-1 bg-transparent text-xs font-sans tracking-widest uppercase text-[#111111] placeholder-[#888888] border-b border-[#cccccc] focus:border-[#111111] focus:outline-none transition-colors"
+      />
+    </div>
+
+    <!-- Big Bold Solid Black SHOES Section with Subcategories -->
+    <div class="pt-1">
+      <a href="#shoes" data-filter-category="all" class="block text-2xl md:text-3xl font-black tracking-tight text-[#111111] uppercase font-sans">
+        SHOES
+      </a>
+
+      <!-- Subcategories -->
+      <div class="pl-2.5 mt-2.5 space-y-1 text-xs font-semibold text-[#666666]">
+        <a href="#sneakers" data-filter-category="sneakers" class="sidebar-subcat block py-0.5 text-[#111111] hover:text-black">
+          <span class="underline font-bold">Sneakers</span>
+        </a>
+        <a href="#sandals" data-filter-category="sandals" class="sidebar-subcat block py-0.5 text-[#777777] hover:text-[#111111] transition-colors">
+          Sandals
+        </a>
+        <a href="#loafers" data-filter-category="loafers" class="sidebar-subcat block py-0.5 text-[#777777] hover:text-[#111111] transition-colors">
+          Loafers
+        </a>
+        <a href="#boots" data-filter-category="boots" class="sidebar-subcat block py-0.5 text-[#777777] hover:text-[#111111] transition-colors">
+          Boots
+        </a>
+        <a href="#espadrilles" data-filter-category="espadrilles" class="sidebar-subcat block py-0.5 text-[#777777] hover:text-[#111111] transition-colors">
+          Espadrilles
+        </a>
+        <a href="#monkstraps" data-filter-category="monkstraps" class="sidebar-subcat block py-0.5 text-[#777777] hover:text-[#111111] transition-colors">
+          Monkstraps
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- CENTER STAGE & META: 100% Full-Width Centered Under Logo -->
+  <div id="hero-right-stage" class="w-full flex-1 flex flex-col items-center justify-between my-auto relative z-20">
+    
+    <!-- 3-Shoe Floating Stage -->
+    <div id="hero-carousel-stage" class="carousel-stage-container w-full">
+      
+      <!-- Left Navigation Arrow Button -->
+      <button 
+        id="btn-carousel-prev"
+        type="button"
+        class="carousel-arrow-btn absolute left-2 md:left-12 lg:left-24 z-30"
+        aria-label="Previous Shoe"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/>
+        </svg>
+      </button>
+
+      <!-- Left Sibling Shoe (Upright, Flat Horizontal Shadow Directly Underneath) -->
+      <div id="floating-shoe-left" class="floating-shoe-slot pos-left max-w-[280px] sm:max-w-[340px] md:max-w-[420px] w-full aspect-[4/3]">
+        <div class="shoe-shadow-disc"></div>
+        <img id="img-shoe-left" src="/assets/shoes/75.png" alt="Previous shoe" class="w-full h-full object-contain drop-shadow-xl pointer-events-none" />
+      </div>
+
+      <!-- Center Main Floating Shoe (Large & Crisp, Perfectly Centered under Logo) -->
+      <div id="floating-shoe-center" class="floating-shoe-slot pos-center max-w-[360px] sm:max-w-[460px] md:max-w-[620px] w-full aspect-[4/3]">
+        <div class="shoe-shadow-disc"></div>
+        <img id="img-shoe-center" src="/assets/shoes/70.png" alt="Active shoe" class="w-full h-full object-contain drop-shadow-2xl" />
+      </div>
+
+      <!-- Right Sibling Shoe (Upright, Flat Horizontal Shadow Directly Underneath) -->
+      <div id="floating-shoe-right" class="floating-shoe-slot pos-right max-w-[280px] sm:max-w-[340px] md:max-w-[420px] w-full aspect-[4/3]">
+        <div class="shoe-shadow-disc"></div>
+        <img id="img-shoe-right" src="/assets/shoes/71.png" alt="Next shoe" class="w-full h-full object-contain drop-shadow-xl pointer-events-none" />
+      </div>
+
+      <!-- Right Navigation Arrow Button -->
+      <button 
+        id="btn-carousel-next"
+        type="button"
+        class="carousel-arrow-btn absolute right-2 md:right-12 lg:right-24 z-30"
+        aria-label="Next Shoe"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+        </svg>
+      </button>
+
+    </div>
+
+    <!-- State A: Centered Brand Name & SEE MORE Button (Higher positioning) -->
+    <div id="hero-carousel-meta" class="text-center space-y-1.5 -mt-2 pb-6 z-20 transition-all duration-400 w-full flex flex-col items-center justify-center">
+      <h1 id="carousel-brand-heading" class="text-3xl md:text-5xl font-black tracking-tight text-[#111111] uppercase font-sans">
+        ATELIER NOIR
+      </h1>
+
+      <p id="carousel-product-subtitle" class="text-xs md:text-sm font-semibold text-[#666666] tracking-wide">
+        Crystals Kinetic High-Top | 1590$
+      </p>
+
+      <div class="pt-2 flex justify-center w-full">
+        <button 
+          id="carousel-see-more-action"
+          type="button" 
+          class="btn-pill-see-more"
+        >
+          SEE MORE
+        </button>
+      </div>
+    </div>
+
+    <!-- State B: In-Place Selected Product Detail HUD (Left Corner: Name, Right Corner: Price & CTA) -->
+    <div id="in-place-detail-hud" class="w-full max-w-[1680px] mx-auto hidden opacity-0 grid grid-cols-1 md:grid-cols-12 gap-6 items-end pt-6 pb-4 border-t border-[#dedede]/80 transition-all duration-500 z-30">
+      <!-- Left Corner: Brand Title + Outline SHOES + Subtitle -->
+      <div class="md:col-span-7 space-y-1">
+        <div class="flex items-baseline gap-3 flex-wrap">
+          <h2 id="hud-brand-title" class="text-3xl md:text-5xl font-black tracking-tight text-[#111111] uppercase font-sans">
+            ATELIER NOIR
+          </h2>
+          <span class="text-3xl md:text-5xl font-black text-outline-brand">
+            SHOES
+          </span>
+        </div>
+        <p id="hud-shoe-subtitle" class="text-xs md:text-sm font-semibold text-[#777777]">
+          Crystals Kinetic High-Top | 1590$
+        </p>
+      </div>
+
+      <!-- Right Corner: Color dots, Size dropdown, Price, Add to Cart, Heart -->
+      <div class="md:col-span-5 flex flex-col items-start md:items-end space-y-4">
+        <div class="flex items-center gap-4 sm:gap-6 flex-wrap">
+          <!-- Colorway dots -->
+          <div class="flex items-center space-x-2">
+            <button class="w-5 h-5 rounded-full bg-[#3d7a42] border-2 border-white ring-1 ring-black/20 cursor-pointer" title="Green"></button>
+            <button class="w-5 h-5 rounded-full bg-[#dbe84a] border-2 border-white ring-1 ring-black/20 cursor-pointer" title="Yellow"></button>
+          </div>
+
+          <!-- Size Dropdown -->
+          <div class="relative">
+            <select 
+              id="hud-size-dropdown"
+              class="appearance-none bg-white border border-[#cccccc] hover:border-[#111111] text-[#111111] text-xs font-bold py-2.5 pl-4 pr-8 rounded-lg cursor-pointer focus:outline-none transition-colors"
+            >
+              <option value="39">Size 39</option>
+              <option value="40">Size 40</option>
+              <option value="41">Size 41</option>
+              <option value="42">Size 42</option>
+              <option value="43" selected>Size 43 ▾</option>
+              <option value="44">Size 44</option>
+              <option value="45">Size 45</option>
+              <option value="46">Size 46</option>
+            </select>
+            <span class="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-xs text-[#555555]">
+              ▾
+            </span>
+          </div>
+
+          <!-- Large Bold Price -->
+          <div id="hud-shoe-price" class="text-3xl md:text-5xl font-black text-[#111111] tracking-tight">
+            1590$
+          </div>
+        </div>
+
+        <!-- Add to Cart + Heart Action Row -->
+        <div class="flex items-center gap-3 w-full md:w-auto">
+          <button 
+            id="hud-add-cart-action"
+            type="button" 
+            class="btn-pill-add-cart flex-1 md:flex-initial"
+          >
+            <span>ADD TO CART</span>
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+            </svg>
+          </button>
+
+          <button 
+            type="button" 
+            class="w-11 h-11 rounded-full border border-[#cccccc] bg-white hover:border-[#111111] flex items-center justify-center text-[#111111] transition-colors cursor-pointer shadow-sm"
+            aria-label="Wishlist"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- State C: Tall Vertical 3:4 Cards on Left + Sticky Details on Right -->
+  <div id="in-place-scroll-gallery" class="max-w-[1680px] mx-auto w-full hidden opacity-0 flex flex-col lg:flex-row gap-12 pt-8 md:pt-16 pb-32 relative">
+    
+    <!-- MOBILE VIEW DETAILS CONTAINER: Description and Accordions directly under HUD on Mobile -->
+    <div class="lg:hidden w-full space-y-6">
+      <p id="mobile-gallery-description" class="text-sm text-[#222222] leading-relaxed font-normal">
+        Low-top panelled mesh and technical canvas sneakers in navy and off-white. Ergonomic cushioned footbed with responsive shock-absorbing midsole. Round cap toe and padded collar. Made in Italy.
+      </p>
+
+      <!-- Mobile Accordions -->
+      <div class="border-t border-[#dedede] pt-3 space-y-3">
+        <div class="border-b border-[#dedede] pb-3">
+          <button type="button" class="ssense-acc-toggle w-full flex justify-between items-center text-sm font-bold text-[#111111] py-1 cursor-pointer">
+            <span>Details</span>
+            <span class="acc-chevron text-xs text-[#888888]">⌵</span>
+          </button>
+          <div class="ssense-acc-panel text-xs text-[#555555] space-y-1.5 mt-2">
+            <p>• Upper: Suede, Leather & Technical Canvas.</p>
+            <p>• Sole: Molded vulcanized rubber.</p>
+            <p>• Padded low-cut collar with reinforced heel cup.</p>
+            <p>• Made in Italy.</p>
+          </div>
+        </div>
+
+        <div class="border-b border-[#dedede] pb-3">
+          <button type="button" class="ssense-acc-toggle w-full flex justify-between items-center text-sm font-bold text-[#111111] py-1 cursor-pointer">
+            <span>Free Delivery and Returns</span>
+            <span class="acc-chevron text-xs text-[#888888]">⌵</span>
+          </button>
+          <div class="ssense-acc-panel hidden text-xs text-[#555555] space-y-1.5 mt-2">
+            <p>• Express international delivery by DHL.</p>
+            <p>• Complimentary 30-day returns with prepaid shipping label.</p>
+          </div>
+        </div>
+
+        <div class="border-b border-[#dedede] pb-3">
+          <button type="button" class="ssense-acc-toggle w-full flex justify-between items-center text-sm font-bold text-[#111111] py-1 cursor-pointer">
+            <span>Reviews (28)</span>
+            <span class="acc-chevron text-xs text-[#888888]">⌵</span>
+          </button>
+          <div class="ssense-acc-panel hidden text-xs text-[#555555] space-y-2 mt-2">
+            <div class="bg-white p-4 rounded-xl border border-[#dedede]">
+              <div class="flex justify-between text-xs font-bold text-[#111111] mb-1">
+                <span>Marc D. (Verified Buyer)</span>
+                <span class="text-amber-500">★★★★★</span>
+              </div>
+              <p class="text-xs text-[#666666]">"The silhouette looks incredible in person. Extremely comfortable footbed."</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEFT COLUMN: Tall Studio Photo Cards (Big Prominent Shoes) -->
+    <div class="w-full lg:w-7/12 space-y-8 md:space-y-12">
+      <div class="tall-studio-card">
+        <img 
+          id="gallery-photo-front"
+          src="/assets/shoes/70.png" 
+          alt="Studio perspective primary" 
+          class="max-h-[320px] md:max-h-[560px] w-auto max-w-[92%] object-contain drop-shadow-2xl"
+        />
+      </div>
+
+      <div class="tall-studio-card">
+        <img 
+          id="gallery-photo-heel"
+          src="/assets/shoes/74.png" 
+          alt="Studio perspective secondary" 
+          class="max-h-[320px] md:max-h-[560px] w-auto max-w-[92%] object-contain drop-shadow-2xl"
+        />
+      </div>
+    </div>
+
+    <!-- DESKTOP RIGHT COLUMN: Sticky Details Panel (Pinned to Viewport across Full Scroll) -->
+    <div class="hidden lg:block lg:w-5/12">
+      <div class="sticky-details-container space-y-8 bg-[#ededed] py-2">
+        <div class="space-y-4">
+          <p id="gallery-full-description" class="text-base md:text-lg text-[#222222] leading-relaxed font-normal">
+            Low-top panelled mesh and technical canvas sneakers in navy and off-white. Ergonomic cushioned footbed with responsive shock-absorbing midsole. Round cap toe and padded collar. Made in Italy.
+          </p>
+        </div>
+
+        <!-- Accordions -->
+        <div class="border-t border-[#dedede] pt-4 space-y-4">
+          <div class="border-b border-[#dedede] pb-4">
+            <button type="button" class="ssense-acc-toggle w-full flex justify-between items-center text-base font-bold text-[#111111] py-1 cursor-pointer">
+              <span>Details</span>
+              <span class="acc-chevron text-xs text-[#888888]">⌵</span>
+            </button>
+            <div class="ssense-acc-panel text-sm text-[#555555] space-y-2 mt-3">
+              <p>• Upper: Suede, Leather & Technical Canvas.</p>
+              <p>• Sole: Molded vulcanized rubber.</p>
+              <p>• Padded low-cut collar with reinforced heel cup.</p>
+              <p>• Made in Italy.</p>
+            </div>
+          </div>
+
+          <div class="border-b border-[#dedede] pb-4">
+            <button type="button" class="ssense-acc-toggle w-full flex justify-between items-center text-base font-bold text-[#111111] py-1 cursor-pointer">
+              <span>Free Delivery and Returns</span>
+              <span class="acc-chevron text-xs text-[#888888]">⌵</span>
+            </button>
+            <div class="ssense-acc-panel hidden text-sm text-[#555555] space-y-2 mt-3">
+              <p>• Express international delivery by DHL.</p>
+              <p>• Complimentary 30-day returns with prepaid shipping label.</p>
+            </div>
+          </div>
+
+          <div class="border-b border-[#dedede] pb-4">
+            <button type="button" class="ssense-acc-toggle w-full flex justify-between items-center text-base font-bold text-[#111111] py-1 cursor-pointer">
+              <span>Reviews (28)</span>
+              <span class="acc-chevron text-xs text-[#888888]">⌵</span>
+            </button>
+            <div class="ssense-acc-panel hidden text-sm text-[#555555] space-y-3 mt-3">
+              <div class="bg-white p-5 rounded-2xl border border-[#dedede]">
+                <div class="flex justify-between text-sm font-bold text-[#111111] mb-1.5">
+                  <span>Marc D. (Verified Buyer)</span>
+                  <span class="text-amber-500">★★★★★</span>
+                </div>
+                <p class="text-sm text-[#666666]">"The silhouette looks incredible in person. Extremely comfortable footbed."</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Footwear Hero Carousel",
+  "settings": [
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Footwear Collection"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Footwear Hero Carousel"
+    }
+  ]
+}
+{% endschema %}

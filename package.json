@@ -1,0 +1,14 @@
+{
+  "name": "shopify-footwear-store",
+  "version": "1.0.0",
+  "description": "Modular Shopify Footwear Store Liquid Section Suite with 3D Three.js & GSAP",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "liquidjs": "^10.12.0"
+  }
+}

@@ -1,0 +1,149 @@
+{% comment %}
+  Section: Footwear Collection Grid View
+  - Dedicated Responsive Grid with Dual Image Hover Animation
+  - Clean Back to Carousel transition
+  - Responsive Cards with Brand, Title, Price and Hover State
+{% endcomment %}
+
+<section 
+  id="collection-grid-section"
+  class="relative w-full min-h-[85vh] bg-[#ededed] text-[#111111] py-8 px-4 md:px-12 hidden opacity-0 transition-opacity duration-500"
+  data-section-id="{{ section.id }}"
+  data-section-type="footwear-collection-grid"
+>
+  <div class="max-w-[1680px] mx-auto space-y-8">
+    
+    <!-- Top Row: Section Heading & Search Filter -->
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-6 border-b border-[#dedede]">
+      <div>
+        <h2 class="text-3xl md:text-4xl font-black uppercase tracking-tight font-sans text-[#111111]">
+          FOOTWEAR COLLECTION
+        </h2>
+        <p class="text-xs font-sans font-semibold text-[#777777] mt-1">
+          Showing all luxury footwear curated by SSENSE
+        </p>
+      </div>
+
+      <!-- Quick Filter Search Input -->
+      <div class="relative w-full md:w-64">
+        <span class="absolute inset-y-0 left-0 flex items-center pointer-events-none text-xs text-[#888888]">
+          ⌕
+        </span>
+        <input 
+          type="text" 
+          id="grid-search-input"
+          placeholder="FILTER PRODUCTS..." 
+          class="w-full pl-5 pr-3 py-1.5 bg-transparent text-xs font-sans tracking-widest uppercase text-[#111111] placeholder-[#888888] border-b border-[#cccccc] focus:border-[#111111] focus:outline-none transition-colors"
+        />
+      </div>
+    </div>
+
+    <!-- 3-Column Responsive Product Card Grid -->
+    <div id="product-cards-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+      
+      <!-- 1. ATELIER NOIR -->
+      <div class="shoe-card-item product-grid-item flex flex-col justify-between p-6 bg-white rounded-2xl border border-[#dedede]" data-product-id="1" data-category="sneakers">
+        <div class="relative w-full aspect-[4/3] flex items-center justify-center p-4 overflow-hidden">
+          <img src="/assets/shoes/70.png" alt="Atelier Noir Sneakers" class="img-primary-view absolute inset-0 w-full h-full object-contain p-2" />
+          <img src="/assets/shoes/74.png" alt="Atelier Noir Sneakers Alternate" class="img-hover-view absolute inset-0 w-full h-full object-contain p-2" />
+        </div>
+        <div class="pt-4 flex justify-between items-baseline border-t border-[#f0f0f0] mt-2">
+          <div>
+            <h3 class="text-sm font-black uppercase tracking-tight text-[#111111]">ATELIER NOIR</h3>
+            <p class="text-xs font-medium text-[#777777]">Crystals Kinetic High-Top</p>
+          </div>
+          <span class="text-sm font-black text-[#111111]">1590$</span>
+        </div>
+      </div>
+
+      <!-- 2. STUDIO EDITION -->
+      <div class="shoe-card-item product-grid-item flex flex-col justify-between p-6 bg-white rounded-2xl border border-[#dedede]" data-product-id="2" data-category="loafers">
+        <div class="relative w-full aspect-[4/3] flex items-center justify-center p-4 overflow-hidden">
+          <img src="/assets/shoes/71.png" alt="Studio Edition Loafers" class="img-primary-view absolute inset-0 w-full h-full object-contain p-2" />
+          <img src="/assets/shoes/75.png" alt="Studio Edition Loafers Alternate" class="img-hover-view absolute inset-0 w-full h-full object-contain p-2" />
+        </div>
+        <div class="pt-4 flex justify-between items-baseline border-t border-[#f0f0f0] mt-2">
+          <div>
+            <h3 class="text-sm font-black uppercase tracking-tight text-[#111111]">STUDIO EDITION</h3>
+            <p class="text-xs font-medium text-[#777777]">Chunky Suede Platform Loafers</p>
+          </div>
+          <span class="text-sm font-black text-[#111111]">975$</span>
+        </div>
+      </div>
+
+      <!-- 3. ESSENTIALS LAB -->
+      <div class="shoe-card-item product-grid-item flex flex-col justify-between p-6 bg-white rounded-2xl border border-[#dedede]" data-product-id="3" data-category="sneakers">
+        <div class="relative w-full aspect-[4/3] flex items-center justify-center p-4 overflow-hidden">
+          <img src="/assets/shoes/72.png" alt="Essentials Lab Sneakers" class="img-primary-view absolute inset-0 w-full h-full object-contain p-2" />
+          <img src="/assets/shoes/70.png" alt="Essentials Lab Sneakers Alternate" class="img-hover-view absolute inset-0 w-full h-full object-contain p-2" />
+        </div>
+        <div class="pt-4 flex justify-between items-baseline border-t border-[#f0f0f0] mt-2">
+          <div>
+            <h3 class="text-sm font-black uppercase tracking-tight text-[#111111]">ESSENTIALS LAB</h3>
+            <p class="text-xs font-medium text-[#777777]">Calfskin Minimalist Court Sneakers</p>
+          </div>
+          <span class="text-sm font-black text-[#111111]">395$</span>
+        </div>
+      </div>
+
+      <!-- 4. HERITAGE ATELIER -->
+      <div class="shoe-card-item product-grid-item flex flex-col justify-between p-6 bg-white rounded-2xl border border-[#dedede]" data-product-id="4" data-category="boots">
+        <div class="relative w-full aspect-[4/3] flex items-center justify-center p-4 overflow-hidden">
+          <img src="/assets/shoes/73.png" alt="Heritage Atelier Brogues" class="img-primary-view absolute inset-0 w-full h-full object-contain p-2" />
+          <img src="/assets/shoes/71.png" alt="Heritage Atelier Brogues Alternate" class="img-hover-view absolute inset-0 w-full h-full object-contain p-2" />
+        </div>
+        <div class="pt-4 flex justify-between items-baseline border-t border-[#f0f0f0] mt-2">
+          <div>
+            <h3 class="text-sm font-black uppercase tracking-tight text-[#111111]">HERITAGE ATELIER</h3>
+            <p class="text-xs font-medium text-[#777777]">Perforated Suede Wingtip Brogues</p>
+          </div>
+          <span class="text-sm font-black text-[#111111]">350$</span>
+        </div>
+      </div>
+
+      <!-- 5. MONOCHROME STUDIO -->
+      <div class="shoe-card-item product-grid-item flex flex-col justify-between p-6 bg-white rounded-2xl border border-[#dedede]" data-product-id="5" data-category="sneakers">
+        <div class="relative w-full aspect-[4/3] flex items-center justify-center p-4 overflow-hidden">
+          <img src="/assets/shoes/74.png" alt="Monochrome Studio Sneakers" class="img-primary-view absolute inset-0 w-full h-full object-contain p-2" />
+          <img src="/assets/shoes/72.png" alt="Monochrome Studio Sneakers Alternate" class="img-hover-view absolute inset-0 w-full h-full object-contain p-2" />
+        </div>
+        <div class="pt-4 flex justify-between items-baseline border-t border-[#f0f0f0] mt-2">
+          <div>
+            <h3 class="text-sm font-black uppercase tracking-tight text-[#111111]">MONOCHROME STUDIO</h3>
+            <p class="text-xs font-medium text-[#777777]">Navy Grain Leather Sneakers</p>
+          </div>
+          <span class="text-sm font-black text-[#111111]">850$</span>
+        </div>
+      </div>
+
+      <!-- 6. AVANT GARDE -->
+      <div class="shoe-card-item product-grid-item flex flex-col justify-between p-6 bg-white rounded-2xl border border-[#dedede]" data-product-id="6" data-category="sandals">
+        <div class="relative w-full aspect-[4/3] flex items-center justify-center p-4 overflow-hidden">
+          <img src="/assets/shoes/75.png" alt="Avant Garde Skate" class="img-primary-view absolute inset-0 w-full h-full object-contain p-2" />
+          <img src="/assets/shoes/73.png" alt="Avant Garde Skate Alternate" class="img-hover-view absolute inset-0 w-full h-full object-contain p-2" />
+        </div>
+        <div class="pt-4 flex justify-between items-baseline border-t border-[#f0f0f0] mt-2">
+          <div>
+            <h3 class="text-sm font-black uppercase tracking-tight text-[#111111]">AVANT GARDE</h3>
+            <p class="text-xs font-medium text-[#777777]">Dual Canvas Skate Sneakers</p>
+          </div>
+          <span class="text-sm font-black text-[#111111]">650$</span>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Footwear Collection Grid",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Footwear Collection Grid"
+    }
+  ]
+}
+{% endschema %}
