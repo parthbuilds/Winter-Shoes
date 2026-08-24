@@ -1,7 +1,7 @@
 {% comment %}
   Section: Footwear Hero 3D Carousel & Responsive Detail View
-  - Mobile: Categories in Slide-out Drawer, 100% Height Centered Carousel, Description below HUD
-  - Desktop: Sidebar on left margin, 3D Depth Floating Carousel, Sticky Details Frame on Right beside Tall Studio Cards
+  - Mobile: Categories in Slide-out Drawer, 100% Height Centered Carousel
+  - Desktop: Collections Sidebar on left margin, 3D Depth Floating Carousel, Sticky Details Frame
 {% endcomment %}
 
 {% assign selected_collection = collections[section.settings.collection] %}
@@ -15,7 +15,7 @@
   {% assign selected_collection = collections.all %}
 {% endif %}
 
-<!-- Embedded High-Speed Footwear Data Island with Dynamic Shopify Products -->
+<!-- Embedded High-Speed Footwear Data Island with Dynamic Shopify Products & Variants -->
 <script id="footwear-collection-data" type="application/json">
 [
   {% if selected_collection != blank and selected_collection.products_count > 0 %}
@@ -23,11 +23,11 @@
       {
         "id": {{ product.id | json }},
         "title": {{ product.title | json }},
-        "brand": {{ product.vendor | default: 'ATELIER NOIR' | json }},
+        "brand": {{ product.vendor | default: shop.name | json }},
         "category": {{ product.type | default: 'sneakers' | downcase | json }},
         "price": {{ product.price | json }},
-        "price_formatted": "{{ product.price | money_without_trailing_zeros }}$",
-        "subtitle": "{{ product.title }} | {{ product.price | money_without_trailing_zeros }}$",
+        "price_formatted": {{ product.price | money | json }},
+        "subtitle": {{ product.title | append: ' | ' | append: (product.price | money) | json }},
         "image_primary": {% if product.featured_image %}{{ product.featured_image | image_url: width: 1200 | json }}{% else %}"{{ '70.png' | asset_url }}"{% endif %},
         "image_secondary": {% if product.images.size > 1 %}{{ product.images[1] | image_url: width: 1200 | json }}{% elsif product.featured_image %}{{ product.featured_image | image_url: width: 1200 | json }}{% else %}"{{ '74.png' | asset_url }}"{% endif %},
         "gallery": [
@@ -36,7 +36,16 @@
         ],
         "description": {{ product.description | strip_html | truncatewords: 40 | default: 'Handcrafted luxury footwear designed with premium materials.' | json }},
         "material": "Upper: Premium Leather / Suede. Sole: Molded Rubber.",
-        "available_sizes": [39, 40, 41, 42, 43, 44, 45, 46]
+        "collections": [{% for c in product.collections %}{{ c.handle | json }}{% unless forloop.last %},{% endunless %}{% endfor %}],
+        "variants": [
+          {% for v in product.variants %}
+            {
+              "id": {{ v.id | json }},
+              "title": {{ v.title | json }},
+              "price": {{ v.price | money | json }}
+            }{% unless forloop.last %},{% endunless %}
+          {% endfor %}
+        ]
       }{% unless forloop.last %},{% endunless %}
     {% endfor %}
   {% else %}
@@ -44,43 +53,41 @@
       "id": "1",
       "brand": "GUCCI",
       "title": "Crystals Flashtrek Sneakers",
-      "subtitle": "Crystals Flashtrek Sneakers | 1590$",
+      "subtitle": "Crystals Flashtrek Sneakers | ₹1,590.00",
       "category": "sneakers",
       "price": 159000,
-      "price_formatted": "1590$",
+      "price_formatted": "₹1,590.00",
       "material": "Technical knit, suede & sculpted responsive sole",
       "description": "Low-top panelled mesh and technical canvas sneakers in navy and off-white. Ergonomic cushioned footbed with responsive shock-absorbing midsole.",
       "image_primary": "{{ '70.png' | asset_url }}",
       "image_secondary": "{{ '74.png' | asset_url }}",
-      "gallery": ["{{ '70.png' | asset_url }}", "{{ '74.png' | asset_url }}"]
+      "gallery": ["{{ '70.png' | asset_url }}", "{{ '74.png' | asset_url }}"],
+      "collections": ["all"],
+      "variants": [
+        {"id": "v1", "title": "Size 39", "price": "₹1,590.00"},
+        {"id": "v2", "title": "Size 40", "price": "₹1,590.00"},
+        {"id": "v3", "title": "Size 41", "price": "₹1,590.00"},
+        {"id": "v4", "title": "Size 42", "price": "₹1,590.00"}
+      ]
     },
     {
       "id": "2",
       "brand": "BALENCIAGA",
       "title": "Chunky Lug Suede Loafers",
-      "subtitle": "Chunky Lug Suede Loafers | 975$",
+      "subtitle": "Chunky Lug Suede Loafers | ₹975.00",
       "category": "loafers",
       "price": 97500,
-      "price_formatted": "975$",
+      "price_formatted": "₹975.00",
       "material": "Oiled Tuscan suede with sculpted tread sole",
       "description": "Handcrafted low-top derbies in wheat tan suede. Heavy-duty lug sole with stacked block heel.",
       "image_primary": "{{ '71.png' | asset_url }}",
       "image_secondary": "{{ '73.png' | asset_url }}",
-      "gallery": ["{{ '71.png' | asset_url }}", "{{ '73.png' | asset_url }}"]
-    },
-    {
-      "id": "3",
-      "brand": "PALM ANGELS",
-      "title": "Calfskin Minimalist Low Sneakers",
-      "subtitle": "Calfskin Minimalist Low Sneakers | 395$",
-      "category": "sneakers",
-      "price": 39500,
-      "price_formatted": "395$",
-      "material": "Smooth Italian cognac calfskin",
-      "description": "Low-top buffed calfskin sneakers in rich cognac brown. Round cap toe with herringbone tread.",
-      "image_primary": "{{ '72.png' | asset_url }}",
-      "image_secondary": "{{ '70.png' | asset_url }}",
-      "gallery": ["{{ '72.png' | asset_url }}", "{{ '70.png' | asset_url }}"]
+      "gallery": ["{{ '71.png' | asset_url }}", "{{ '73.png' | asset_url }}"],
+      "collections": ["all"],
+      "variants": [
+        {"id": "v5", "title": "Size 40", "price": "₹975.00"},
+        {"id": "v6", "title": "Size 41", "price": "₹975.00"}
+      ]
     }
   {% endif %}
 ]
@@ -93,7 +100,7 @@
   data-section-type="footwear-hero-carousel"
 >
 
-  <!-- DESKTOP LEFT SIDEBAR: Hidden on Mobile (housed in mobile sliding drawer) -->
+  <!-- DESKTOP LEFT SIDEBAR: Dynamic Collections List from Store -->
   <div id="hero-left-sidebar" class="hidden lg:block lg:absolute lg:left-10 lg:top-8 z-30 space-y-6 pt-2 transition-all duration-500">
     
     <!-- Search Input -->
@@ -109,35 +116,32 @@
       />
     </div>
 
-    <!-- Big Bold Solid Black SHOES Section with Subcategories -->
+    <!-- Dynamic Collections List from Shopify Store -->
     <div class="pt-1">
-      <a href="#shoes" data-filter-category="all" class="block text-2xl md:text-3xl font-black tracking-tight text-[#111111] uppercase font-sans">
-        {{ selected_collection.title | default: 'SHOES' }}
+      <a href="#all" data-filter-collection="all" class="block text-2xl md:text-3xl font-black tracking-tight text-[#111111] uppercase font-sans">
+        COLLECTIONS
       </a>
 
-      <!-- Subcategories / Categories -->
+      <!-- Subcategories / Collections -->
       <div class="pl-2.5 mt-2.5 space-y-1 text-xs font-semibold text-[#666666]">
-        <a href="#all" data-filter-category="all" class="sidebar-subcat block py-0.5 text-[#111111] hover:text-black">
-          <span class="underline font-bold">All Footwear</span>
+        <a href="#all" data-filter-collection="all" class="sidebar-subcat block py-0.5 text-[#111111] font-bold">
+          <span class="underline">All Footwear</span>
         </a>
-        <a href="#sneakers" data-filter-category="sneakers" class="sidebar-subcat block py-0.5 text-[#777777] hover:text-[#111111] transition-colors">
-          Sneakers
-        </a>
-        <a href="#sandals" data-filter-category="sandals" class="sidebar-subcat block py-0.5 text-[#777777] hover:text-[#111111] transition-colors">
-          Sandals
-        </a>
-        <a href="#loafers" data-filter-category="loafers" class="sidebar-subcat block py-0.5 text-[#777777] hover:text-[#111111] transition-colors">
-          Loafers
-        </a>
-        <a href="#boots" data-filter-category="boots" class="sidebar-subcat block py-0.5 text-[#777777] hover:text-[#111111] transition-colors">
-          Boots
-        </a>
-        <a href="#espadrilles" data-filter-category="espadrilles" class="sidebar-subcat block py-0.5 text-[#777777] hover:text-[#111111] transition-colors">
-          Espadrilles
-        </a>
-        <a href="#monkstraps" data-filter-category="monkstraps" class="sidebar-subcat block py-0.5 text-[#777777] hover:text-[#111111] transition-colors">
-          Monkstraps
-        </a>
+        {% assign col_count = 0 %}
+        {% for col in collections %}
+          {% unless col.handle == 'frontpage' %}
+            {% assign col_count = col_count | plus: 1 %}
+            <a href="{{ col.url }}" data-filter-collection="{{ col.handle }}" class="sidebar-subcat block py-0.5 text-[#777777] hover:text-[#111111] transition-colors">
+              {{ col.title }}
+            </a>
+          {% endunless %}
+        {% endfor %}
+        {% if col_count == 0 %}
+          <a href="#sneakers" data-filter-category="sneakers" class="sidebar-subcat block py-0.5 text-[#777777] hover:text-[#111111]">Sneakers</a>
+          <a href="#sandals" data-filter-category="sandals" class="sidebar-subcat block py-0.5 text-[#777777] hover:text-[#111111]">Sandals</a>
+          <a href="#loafers" data-filter-category="loafers" class="sidebar-subcat block py-0.5 text-[#777777] hover:text-[#111111]">Loafers</a>
+          <a href="#boots" data-filter-category="boots" class="sidebar-subcat block py-0.5 text-[#777777] hover:text-[#111111]">Boots</a>
+        {% endif %}
       </div>
     </div>
   </div>
@@ -195,11 +199,11 @@
     <!-- State A: Centered Brand Name & SEE MORE Button -->
     <div id="hero-carousel-meta" class="text-center space-y-1.5 -mt-2 pb-6 z-20 transition-all duration-400 w-full flex flex-col items-center justify-center">
       <h1 id="carousel-brand-heading" class="text-3xl md:text-5xl font-black tracking-tight text-[#111111] uppercase font-sans">
-        ATELIER NOIR
+        GUCCI
       </h1>
 
       <p id="carousel-product-subtitle" class="text-xs md:text-sm font-semibold text-[#666666] tracking-wide">
-        Crystals Kinetic High-Top | 1590$
+        Crystals Flashtrek Sneakers | ₹1,590.00
       </p>
 
       <div class="pt-2 flex justify-center w-full">
@@ -215,22 +219,22 @@
 
     <!-- State B: In-Place Selected Product Detail HUD -->
     <div id="in-place-detail-hud" class="w-full max-w-[1680px] mx-auto hidden opacity-0 grid grid-cols-1 md:grid-cols-12 gap-6 items-end pt-6 pb-4 border-t border-[#dedede]/80 transition-all duration-500 z-30">
-      <!-- Left Corner: Brand Title + Outline SHOES + Subtitle -->
+      <!-- Left Corner: Brand Title + Subtitle -->
       <div class="md:col-span-7 space-y-1">
         <div class="flex items-baseline gap-3 flex-wrap">
           <h2 id="hud-brand-title" class="text-3xl md:text-5xl font-black tracking-tight text-[#111111] uppercase font-sans">
-            ATELIER NOIR
+            GUCCI
           </h2>
           <span class="text-3xl md:text-5xl font-black text-outline-brand">
             SHOES
           </span>
         </div>
         <p id="hud-shoe-subtitle" class="text-xs md:text-sm font-semibold text-[#777777]">
-          Crystals Kinetic High-Top | 1590$
+          Crystals Flashtrek Sneakers | ₹1,590.00
         </p>
       </div>
 
-      <!-- Right Corner: Color dots, Size dropdown, Price, Add to Cart, Heart -->
+      <!-- Right Corner: Color dots, Dynamic Variant Dropdown, Price, Add to Cart -->
       <div class="md:col-span-5 flex flex-col items-start md:items-end space-y-4">
         <div class="flex items-center gap-4 sm:gap-6 flex-wrap">
           <!-- Colorway dots -->
@@ -239,33 +243,26 @@
             <button class="w-5 h-5 rounded-full bg-[#ffffff] border-2 border-gray-300 ring-1 ring-black/20 cursor-pointer" title="White"></button>
           </div>
 
-          <!-- Size Dropdown -->
+          <!-- Dynamic Variant Selector -->
           <div class="relative">
             <select 
               id="hud-size-dropdown"
               class="appearance-none bg-white border border-[#cccccc] hover:border-[#111111] text-[#111111] text-xs font-bold py-2.5 pl-4 pr-8 rounded-lg cursor-pointer focus:outline-none transition-colors"
             >
-              <option value="39">Size 39</option>
-              <option value="40">Size 40</option>
-              <option value="41">Size 41</option>
-              <option value="42">Size 42</option>
-              <option value="43" selected>Size 43 ▾</option>
-              <option value="44">Size 44</option>
-              <option value="45">Size 45</option>
-              <option value="46">Size 46</option>
+              <option value="default">Select Variant ▾</option>
             </select>
             <span class="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-xs text-[#555555]">
               ▾
             </span>
           </div>
 
-          <!-- Large Bold Price -->
-          <div id="hud-shoe-price" class="text-3xl md:text-5xl font-black text-[#111111] tracking-tight">
-            1590$
+          <!-- Large Bold Price (Native Store Currency Format) -->
+          <div id="hud-shoe-price" class="text-2xl sm:text-3xl md:text-4xl font-black text-[#111111] tracking-tight">
+            ₹1,590.00
           </div>
         </div>
 
-        <!-- Add to Cart + Heart Action Row -->
+        <!-- Add to Cart Action Row -->
         <div class="flex items-center gap-3 w-full md:w-auto">
           <button 
             id="hud-add-cart-action"
@@ -299,7 +296,7 @@
     <!-- MOBILE VIEW DETAILS CONTAINER -->
     <div class="lg:hidden w-full space-y-6">
       <p id="mobile-gallery-description" class="text-sm text-[#222222] leading-relaxed font-normal">
-        Low-top panelled mesh and technical canvas sneakers in navy and off-white. Ergonomic cushioned footbed with responsive shock-absorbing midsole. Made in Italy.
+        Handcrafted luxury footwear designed with premium materials. Ergonomic cushioned footbed with responsive shock-absorbing midsole.
       </p>
 
       <!-- Mobile Accordions -->
@@ -312,7 +309,6 @@
           <div class="ssense-acc-panel text-xs text-[#555555] space-y-1.5 mt-2">
             <p>• Upper: Suede, Leather & Technical Canvas.</p>
             <p>• Sole: Molded vulcanized rubber.</p>
-            <p>• Padded low-cut collar with reinforced heel cup.</p>
             <p>• Premium Quality Atelier Standard.</p>
           </div>
         </div>
@@ -356,7 +352,7 @@
       <div class="sticky-details-container space-y-8 bg-[#ededed] py-2">
         <div class="space-y-4">
           <p id="gallery-full-description" class="text-base md:text-lg text-[#222222] leading-relaxed font-normal">
-            Low-top panelled mesh and technical canvas sneakers in navy and off-white. Ergonomic cushioned footbed with responsive shock-absorbing midsole. Made in Italy.
+            Handcrafted luxury footwear designed with premium materials. Ergonomic cushioned footbed with responsive shock-absorbing midsole.
           </p>
         </div>
 
@@ -370,7 +366,6 @@
             <div class="ssense-acc-panel text-sm text-[#555555] space-y-2 mt-3">
               <p>• Upper: Suede, Leather & Technical Canvas.</p>
               <p>• Sole: Molded vulcanized rubber.</p>
-              <p>• Padded low-cut collar with reinforced heel cup.</p>
               <p>• Premium Quality Atelier Standard.</p>
             </div>
           </div>

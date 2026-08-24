@@ -68,31 +68,31 @@
         />
       </div>
 
-      <!-- SHOES Categories in Mobile Drawer -->
+      <!-- COLLECTIONS in Mobile Drawer -->
       <div class="pt-2">
-        <a href="#shoes" data-filter-category="all" class="block text-2xl font-black tracking-tight text-[#111111] uppercase font-sans">
-          SHOES
+        <a href="#all" data-filter-collection="all" class="block text-2xl font-black tracking-tight text-[#111111] uppercase font-sans">
+          COLLECTIONS
         </a>
 
         <div class="pl-3 mt-3 space-y-2 text-xs font-semibold text-[#666666]">
-          <a href="#sneakers" data-filter-category="sneakers" class="sidebar-subcat block py-1 text-[#111111] font-bold">
-            <span class="underline">Sneakers</span>
+          <a href="#all" data-filter-collection="all" class="sidebar-subcat block py-1 text-[#111111] font-bold">
+            <span class="underline">All Footwear</span>
           </a>
-          <a href="#sandals" data-filter-category="sandals" class="sidebar-subcat block py-1 text-[#777777] hover:text-[#111111]">
-            Sandals
-          </a>
-          <a href="#loafers" data-filter-category="loafers" class="sidebar-subcat block py-1 text-[#777777] hover:text-[#111111]">
-            Loafers
-          </a>
-          <a href="#boots" data-filter-category="boots" class="sidebar-subcat block py-1 text-[#777777] hover:text-[#111111]">
-            Boots
-          </a>
-          <a href="#espadrilles" data-filter-category="espadrilles" class="sidebar-subcat block py-1 text-[#777777] hover:text-[#111111]">
-            Espadrilles
-          </a>
-          <a href="#monkstraps" data-filter-category="monkstraps" class="sidebar-subcat block py-1 text-[#777777] hover:text-[#111111]">
-            Monkstraps
-          </a>
+          {% assign mob_col_count = 0 %}
+          {% for col in collections %}
+            {% unless col.handle == 'frontpage' %}
+              {% assign mob_col_count = mob_col_count | plus: 1 %}
+              <a href="{{ col.url }}" data-filter-collection="{{ col.handle }}" class="sidebar-subcat block py-1 text-[#777777] hover:text-[#111111]">
+                {{ col.title }}
+              </a>
+            {% endunless %}
+          {% endfor %}
+          {% if mob_col_count == 0 %}
+            <a href="#sneakers" data-filter-category="sneakers" class="sidebar-subcat block py-1 text-[#777777]">Sneakers</a>
+            <a href="#sandals" data-filter-category="sandals" class="sidebar-subcat block py-1 text-[#777777]">Sandals</a>
+            <a href="#loafers" data-filter-category="loafers" class="sidebar-subcat block py-1 text-[#777777]">Loafers</a>
+            <a href="#boots" data-filter-category="boots" class="sidebar-subcat block py-1 text-[#777777]">Boots</a>
+          {% endif %}
         </div>
       </div>
     </div>

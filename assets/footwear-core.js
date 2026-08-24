@@ -1,15 +1,13 @@
 /**
  * SSENSE Luxury Footwear Interaction Suite
  * Features:
- * - Mobile Slide-out Category Drawer (Hamburger Menu)
+ * - Mobile Slide-out Category & Collections Drawer
  * - True Sticky Details Panel beside Left Scrolling Cards
  * - Flat Horizontal Ground Shadows (No Angle Tilt)
  * - 3-Shoe Floating Stage with Centered Brand Name & SEE MORE button
  * - Mouse drag, Touch swipe, Trackpad wheel gesture & direct sibling click cycling
- * - Corner-aligned In-Place Detail HUD
- * - Top-left Back button in both Detail view and Grid view
- * - Top-right fixed View Switcher (Grid <-> 3D Carousel)
- * - Subcategory live filtering & AJAX Add-to-Bag
+ * - Dynamic Store Currency & Variants Dropdown
+ * - AJAX Add-to-Bag & Redirect to Luxury Cart Page
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -18,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     shoes: [],
     filteredShoes: [],
     currentIndex: 0,
-    activeCategory: 'sneakers',
+    activeCategory: 'all',
     currentView: 'carousel', // 'carousel', 'grid', 'detail'
     previousView: 'carousel',
     cartCount: 0
@@ -234,14 +232,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // 6. SUBCATEGORY LIVE FILTERING
-  function applySubcategoryFilter(cat) {
-    Store.activeCategory = cat.toLowerCase();
+  // 6. SUBCATEGORY & COLLECTION LIVE FILTERING
+  function applySubcategoryFilter(targetVal) {
+    const target = (targetVal || '').toLowerCase();
+    Store.activeCategory = target;
 
-    // Update active subcategory styling in both desktop sidebar and mobile drawer
-    document.querySelectorAll('[data-filter-category]').forEach(link => {
-      const linkCat = (link.dataset.filterCategory || '').toLowerCase();
-      if (linkCat === Store.activeCategory) {
+    document.querySelectorAll('[data-filter-category], [data-filter-collection]').forEach(link => {
+      const linkVal = (link.dataset.filterCollection || link.dataset.filterCategory || '').toLowerCase();
+      if (linkVal === Store.activeCategory) {
         link.classList.add('text-[#111111]', 'font-bold');
         link.classList.remove('text-[#777777]');
         const underlineSpan = link.querySelector('span');
@@ -254,10 +252,11 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    if (Store.activeCategory === 'all') {
+    if (Store.activeCategory === 'all' || !Store.activeCategory) {
       Store.filteredShoes = [...Store.shoes];
     } else {
       Store.filteredShoes = Store.shoes.filter(s => 
+        (s.collections || []).includes(Store.activeCategory) ||
         (s.category || '').toLowerCase() === Store.activeCategory ||
         (s.title || '').toLowerCase().includes(Store.activeCategory)
       );
@@ -279,10 +278,13 @@ document.addEventListener('DOMContentLoaded', () => {
     closeMobileDrawer();
   }
 
-  document.querySelectorAll('[data-filter-category]').forEach(link => {
+  document.querySelectorAll('[data-filter-category], [data-filter-collection]').forEach(link => {
     link.addEventListener('click', (e) => {
-      e.preventDefault();
-      applySubcategoryFilter(link.dataset.filterCategory);
+      const val = link.dataset.filterCollection || link.dataset.filterCategory;
+      if (val) {
+        e.preventDefault();
+        applySubcategoryFilter(val);
+      }
     });
   });
 
@@ -366,7 +368,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (gridGridBtn) gridGridBtn.addEventListener('click', () => setViewMode('grid'));
   if (gridCarouselBtn) gridCarouselBtn.addEventListener('click', () => setViewMode('carousel'));
 
-  // 8. IN-PLACE DETAIL TRANSITION
+  // 8. IN-PLACE DETAIL TRANSITION & DYNAMIC VARIANTS
   window.showProductDetail = function(productId) {
     const shoe = Store.shoes.find(s => String(s.id) === String(productId)) || Store.filteredShoes[Store.currentIndex] || Store.shoes[0];
     if (!shoe) return;
@@ -382,6 +384,26 @@ document.addEventListener('DOMContentLoaded', () => {
     if (hudBrandTitle) hudBrandTitle.textContent = shoe.brand;
     if (hudShoeSubtitle) hudShoeSubtitle.textContent = shoe.subtitle || `${shoe.title} | ${shoe.price_formatted}`;
     if (hudShoePrice) hudShoePrice.textContent = shoe.price_formatted;
+
+    // Populate Dynamic Variant Dropdown
+    if (hudSizeDropdown) {
+      hudSizeDropdown.innerHTML = '';
+      if (shoe.variants && shoe.variants.length > 0) {
+        shoe.variants.forEach(v => {
+          const opt = document.createElement('option');
+          opt.value = v.id;
+          opt.textContent = v.title + (v.price ? ` - ${v.price}` : '');
+          hudSizeDropdown.appendChild(opt);
+        });
+      } else {
+        ['39', '40', '41', '42', '43', '44'].forEach(sz => {
+          const opt = document.createElement('option');
+          opt.value = sz;
+          opt.textContent = `Size ${sz}`;
+          hudSizeDropdown.appendChild(opt);
+        });
+      }
+    }
 
     const gallery = shoe.gallery || [shoe.image_primary, shoe.image_secondary || shoe.image_primary];
     if (imgCenter) imgCenter.src = shoe.image_primary;
@@ -518,24 +540,24 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // 9. AJAX ADD TO CART
+  // 9. AJAX ADD TO CART & REDIRECT TO CART PAGE
   if (hudAddCartBtn) {
     hudAddCartBtn.addEventListener('click', async () => {
-      const chosenSize = hudSizeDropdown ? hudSizeDropdown.value : '43';
+      const selectedVariantId = hudSizeDropdown ? hudSizeDropdown.value : null;
       const activeShoe = Store.filteredShoes[Store.currentIndex] || Store.shoes[0];
 
       hudAddCartBtn.innerHTML = `<span>ADDING...</span>`;
       hudAddCartBtn.disabled = true;
 
       try {
+        const itemToPost = (selectedVariantId && selectedVariantId !== 'default' && !isNaN(selectedVariantId))
+          ? { id: Number(selectedVariantId), quantity: 1 }
+          : { id: activeShoe.id, quantity: 1 };
+
         const res = await fetch('/cart/add.js', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            id: activeShoe.id,
-            quantity: 1,
-            properties: { 'Size': chosenSize }
-          })
+          body: JSON.stringify(itemToPost)
         });
 
         const data = await res.json();
@@ -544,23 +566,18 @@ document.addEventListener('DOMContentLoaded', () => {
         if (navCartBadge) {
           navCartBadge.textContent = Store.cartCount;
           navCartBadge.classList.remove('hidden');
-          if (window.gsap) {
-            gsap.fromTo(navCartBadge, { scale: 1.8 }, { scale: 1, duration: 0.35, ease: 'back.out(2)' });
-          }
         }
 
-        hudAddCartBtn.innerHTML = `<span>✓ ADDED (SIZE ${chosenSize})</span>`;
+        hudAddCartBtn.innerHTML = `<span>✓ ADDED! GOING TO BAG...</span>`;
         hudAddCartBtn.classList.add('bg-emerald-700');
 
         setTimeout(() => {
-          hudAddCartBtn.innerHTML = `<span>ADD TO CART</span><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>`;
-          hudAddCartBtn.classList.remove('bg-emerald-700');
-          hudAddCartBtn.disabled = false;
-        }, 1200);
+          window.location.href = '/cart';
+        }, 500);
 
       } catch (e) {
         console.error('Cart error:', e);
-        hudAddCartBtn.disabled = false;
+        window.location.href = '/cart';
       }
     });
   }

@@ -29,20 +29,22 @@
       </svg>
     </button>
 
-    <!-- Desktop Category Navigation Links -->
+    <!-- Desktop Navigation Links (Default: HOME & CONTACT - catalog removed) -->
     <nav class="hidden md:flex items-center space-x-7 text-xs font-sans tracking-widest uppercase">
       {% if section.settings.menu != blank %}
         {% for link in linklists[section.settings.menu].links %}
-          <a 
-            href="{{ link.url }}" 
-            class="pb-0.5 {% if link.active or forloop.first %}font-extrabold text-[#111111] border-b-2 border-black{% else %}font-semibold text-[#777777] hover:text-[#111111] transition-colors{% endif %}"
-          >
-            {{ link.title }}
-          </a>
+          {% unless link.title downcase == 'catalog' %}
+            <a 
+              href="{{ link.url }}" 
+              class="pb-0.5 {% if link.active or forloop.first %}font-extrabold text-[#111111] border-b-2 border-black{% else %}font-semibold text-[#777777] hover:text-[#111111] transition-colors{% endif %}"
+            >
+              {{ link.title }}
+            </a>
+          {% endunless %}
         {% endfor %}
       {% else %}
-        <a href="#men" class="font-extrabold text-[#111111] border-b-2 border-black pb-0.5">MEN</a>
-        <a href="#woman" class="font-semibold text-[#777777] hover:text-[#111111] transition-colors pb-0.5">WOMAN</a>
+        <a href="/" class="font-extrabold text-[#111111] border-b-2 border-black pb-0.5">HOME</a>
+        <a href="#contact" class="font-semibold text-[#777777] hover:text-[#111111] transition-colors pb-0.5">CONTACT</a>
       {% endif %}
     </nav>
   </div>
@@ -79,9 +81,6 @@
     {% if section.settings.show_wishlist %}
       <a href="#wishlist" class="hidden lg:inline font-semibold text-[#777777] hover:text-[#111111] transition-colors">WISHLIST</a>
     {% endif %}
-    {% if section.settings.show_blog %}
-      <a href="#blog" class="hidden lg:inline font-semibold text-[#777777] hover:text-[#111111] transition-colors">BLOG</a>
-    {% endif %}
     
     <!-- Search icon -->
     <button type="button" class="text-[#111111] hover:opacity-60 transition-opacity p-1" aria-label="Search">
@@ -90,13 +89,13 @@
       </svg>
     </button>
 
-    <!-- Shopping Bag -->
-    <a href="#cart" class="relative text-[#111111] hover:opacity-60 transition-opacity p-1" aria-label="Shopping Bag">
+    <!-- Shopping Bag Link -> Goes to /cart -->
+    <a href="/cart" class="relative text-[#111111] hover:opacity-60 transition-opacity p-1" aria-label="Shopping Bag">
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
       </svg>
-      <span id="nav-cart-badge" class="hidden absolute -top-1 -right-1 bg-[#111111] text-white text-[9px] w-3.5 h-3.5 rounded-full flex items-center justify-center font-sans font-bold">
-        0
+      <span id="nav-cart-badge" class="{% if cart.item_count == 0 %}hidden{% endif %} absolute -top-1 -right-1 bg-[#111111] text-white text-[9px] w-3.5 h-3.5 rounded-full flex items-center justify-center font-sans font-bold">
+        {{ cart.item_count }}
       </span>
     </a>
 
@@ -157,12 +156,6 @@
       "type": "checkbox",
       "id": "show_wishlist",
       "label": "Show Wishlist Link",
-      "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "show_blog",
-      "label": "Show Blog Link",
       "default": true
     }
   ]

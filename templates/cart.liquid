@@ -1,0 +1,160 @@
+{% comment %}
+  Template: Cart Page
+  SSENSE Luxury Footwear Atelier Cart Experience
+{% endcomment %}
+
+<div class="w-full min-h-[80vh] bg-[#ededed] text-[#111111] py-10 px-4 md:px-12">
+  <div class="max-w-[1200px] mx-auto space-y-8">
+    
+    <!-- Top Header -->
+    <div class="flex justify-between items-baseline pb-6 border-b border-[#dedede]">
+      <div>
+        <h1 class="text-3xl md:text-5xl font-black uppercase tracking-tight font-sans">
+          SHOPPING BAG
+        </h1>
+        <p class="text-xs font-semibold text-[#777777] mt-1">
+          {{ cart.item_count }} {% if cart.item_count == 1 %}ITEM{% else %}ITEMS{% endif %} IN YOUR SELECTION
+        </p>
+      </div>
+
+      <a href="/" class="text-xs font-bold tracking-widest text-[#111111] hover:underline uppercase">
+        ← CONTINUE SHOPPING
+      </a>
+    </div>
+
+    {% if cart.item_count > 0 %}
+      <form action="/cart" method="post" novalidate class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        
+        <!-- Cart Line Items (Left 8 Cols) -->
+        <div class="lg:col-span-8 space-y-6">
+          {% for item in cart.items %}
+            <div class="flex gap-6 p-6 bg-white rounded-2xl border border-[#dedede] relative">
+              <!-- Item Image -->
+              <div class="w-24 h-24 sm:w-32 sm:h-32 aspect-square flex-shrink-0 bg-[#f9f9f9] rounded-xl p-2 flex items-center justify-center">
+                {% if item.image %}
+                  <img src="{{ item.image | image_url: width: 400 }}" alt="{{ item.title | escape }}" class="w-full h-full object-contain" />
+                {% else %}
+                  <img src="{{ '70.png' | asset_url }}" alt="Item image" class="w-full h-full object-contain" />
+                {% endif %}
+              </div>
+
+              <!-- Item Info -->
+              <div class="flex-1 flex flex-col justify-between">
+                <div>
+                  <div class="flex justify-between items-start">
+                    <div>
+                      <h3 class="text-base font-black uppercase tracking-tight text-[#111111]">
+                        {{ item.product.vendor | default: shop.name }}
+                      </h3>
+                      <p class="text-sm font-semibold text-[#555555]">
+                        {{ item.product.title }}
+                      </p>
+                      {% unless item.variant.title contains 'Default' %}
+                        <p class="text-xs font-medium text-[#777777] mt-0.5">
+                          Variant: {{ item.variant.title }}
+                        </p>
+                      {% endunless %}
+                    </div>
+
+                    <!-- Price -->
+                    <span class="text-base font-black text-[#111111]">
+                      {{ item.final_line_price | money }}
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Quantity & Remove Action -->
+                <div class="flex justify-between items-center pt-4 border-t border-[#f0f0f0]">
+                  <div class="flex items-center space-x-3">
+                    <label for="updates_{{ item.key }}" class="text-xs font-bold text-[#777777]">QTY:</label>
+                    <input 
+                      type="number" 
+                      name="updates[]" 
+                      id="updates_{{ item.key }}" 
+                      value="{{ item.quantity }}" 
+                      min="0" 
+                      class="w-16 px-2 py-1 bg-transparent border border-[#cccccc] rounded-lg text-xs font-bold text-center focus:outline-none focus:border-black"
+                    />
+                  </div>
+
+                  <a href="/cart/change?line={{ forloop.index }}&quantity=0" class="text-xs font-bold text-red-600 hover:underline uppercase">
+                    REMOVE
+                  </a>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+
+          <!-- Update Cart Button -->
+          <div class="flex justify-end pt-2">
+            <button type="submit" name="update" class="px-6 py-2.5 bg-white border border-[#cccccc] hover:border-black rounded-lg text-xs font-bold uppercase transition-colors">
+              UPDATE BAG
+            </button>
+          </div>
+        </div>
+
+        <!-- Summary Column (Right 4 Cols) -->
+        <div class="lg:col-span-4 space-y-6">
+          <div class="p-6 bg-white rounded-2xl border border-[#dedede] space-y-6">
+            <h2 class="text-lg font-black uppercase tracking-tight text-[#111111] pb-4 border-b border-[#dedede]">
+              ORDER SUMMARY
+            </h2>
+
+            <div class="space-y-3 text-xs font-semibold">
+              <div class="flex justify-between text-[#555555]">
+                <span>SUBTOTAL</span>
+                <span class="text-sm font-black text-[#111111]">{{ cart.total_price | money }}</span>
+              </div>
+              <div class="flex justify-between text-[#555555]">
+                <span>SHIPPING</span>
+                <span class="text-emerald-700 font-bold">COMPLIMENTARY</span>
+              </div>
+              <div class="flex justify-between text-[#555555]">
+                <span>TAXES</span>
+                <span>CALCULATED AT CHECKOUT</span>
+              </div>
+            </div>
+
+            <div class="pt-4 border-t border-[#dedede]">
+              <div class="flex justify-between items-baseline mb-6">
+                <span class="text-sm font-black text-[#111111]">TOTAL</span>
+                <span class="text-2xl font-black text-[#111111]">{{ cart.total_price | money }}</span>
+              </div>
+
+              <!-- Checkout Button -->
+              <button 
+                type="submit" 
+                name="checkout" 
+                class="w-full py-4 bg-[#111111] text-white hover:bg-black/80 rounded-xl text-xs font-bold tracking-widest uppercase transition-all shadow-lg cursor-pointer flex items-center justify-center gap-2"
+              >
+                <span>PROCEED TO CHECKOUT</span>
+                <span>→</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </form>
+
+    {% else %}
+      
+      <!-- Empty Cart State -->
+      <div class="text-center py-20 bg-white rounded-3xl border border-[#dedede] space-y-6">
+        <div class="w-16 h-16 mx-auto bg-[#ededed] rounded-full flex items-center justify-center text-2xl text-[#777777]">
+          🛍️
+        </div>
+        <div class="space-y-2">
+          <h2 class="text-2xl font-black uppercase text-[#111111]">YOUR BAG IS EMPTY</h2>
+          <p class="text-xs text-[#777777] max-w-sm mx-auto">Explore our luxury footwear atelier collection and discover designer footwear.</p>
+        </div>
+        <div>
+          <a href="/" class="inline-block px-8 py-3.5 bg-[#111111] text-white rounded-xl text-xs font-bold tracking-widest uppercase hover:bg-black/80 transition-all shadow-md">
+            DISCOVER COLLECTION
+          </a>
+        </div>
+      </div>
+
+    {% endif %}
+
+  </div>
+</div>
