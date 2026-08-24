@@ -33,7 +33,8 @@
     <nav class="hidden md:flex items-center space-x-7 text-xs font-sans tracking-widest uppercase">
       {% if section.settings.menu != blank %}
         {% for link in linklists[section.settings.menu].links %}
-          {% unless link.title downcase == 'catalog' %}
+          {% assign link_title_clean = link.title | downcase %}
+          {% unless link_title_clean == 'catalog' %}
             <a 
               href="{{ link.url }}" 
               class="pb-0.5 {% if link.active or forloop.first %}font-extrabold text-[#111111] border-b-2 border-black{% else %}font-semibold text-[#777777] hover:text-[#111111] transition-colors{% endif %}"

@@ -20,14 +20,16 @@
 [
   {% if selected_collection != blank and selected_collection.products_count > 0 %}
     {% for product in selected_collection.products %}
+      {% assign formatted_price = product.price | money %}
+      {% assign product_subtitle = product.title | append: ' | ' | append: formatted_price %}
       {
         "id": {{ product.id | json }},
         "title": {{ product.title | json }},
         "brand": {{ product.vendor | default: shop.name | json }},
         "category": {{ product.type | default: 'sneakers' | downcase | json }},
         "price": {{ product.price | json }},
-        "price_formatted": {{ product.price | money | json }},
-        "subtitle": {{ product.title | append: ' | ' | append: (product.price | money) | json }},
+        "price_formatted": {{ formatted_price | json }},
+        "subtitle": {{ product_subtitle | json }},
         "image_primary": {% if product.featured_image %}{{ product.featured_image | image_url: width: 1200 | json }}{% else %}"{{ '70.png' | asset_url }}"{% endif %},
         "image_secondary": {% if product.images.size > 1 %}{{ product.images[1] | image_url: width: 1200 | json }}{% elsif product.featured_image %}{{ product.featured_image | image_url: width: 1200 | json }}{% else %}"{{ '74.png' | asset_url }}"{% endif %},
         "gallery": [
@@ -39,10 +41,11 @@
         "collections": [{% for c in product.collections %}{{ c.handle | json }}{% unless forloop.last %},{% endunless %}{% endfor %}],
         "variants": [
           {% for v in product.variants %}
+            {% assign v_price = v.price | money %}
             {
               "id": {{ v.id | json }},
               "title": {{ v.title | json }},
-              "price": {{ v.price | money | json }}
+              "price": {{ v_price | json }}
             }{% unless forloop.last %},{% endunless %}
           {% endfor %}
         ]
@@ -53,10 +56,10 @@
       "id": "1",
       "brand": "GUCCI",
       "title": "Crystals Flashtrek Sneakers",
-      "subtitle": "Crystals Flashtrek Sneakers | ₹1,590.00",
+      "subtitle": "Crystals Flashtrek Sneakers | $1,590",
       "category": "sneakers",
       "price": 159000,
-      "price_formatted": "₹1,590.00",
+      "price_formatted": "$1,590",
       "material": "Technical knit, suede & sculpted responsive sole",
       "description": "Low-top panelled mesh and technical canvas sneakers in navy and off-white. Ergonomic cushioned footbed with responsive shock-absorbing midsole.",
       "image_primary": "{{ '70.png' | asset_url }}",
@@ -64,20 +67,20 @@
       "gallery": ["{{ '70.png' | asset_url }}", "{{ '74.png' | asset_url }}"],
       "collections": ["all"],
       "variants": [
-        {"id": "v1", "title": "Size 39", "price": "₹1,590.00"},
-        {"id": "v2", "title": "Size 40", "price": "₹1,590.00"},
-        {"id": "v3", "title": "Size 41", "price": "₹1,590.00"},
-        {"id": "v4", "title": "Size 42", "price": "₹1,590.00"}
+        {"id": "v1", "title": "Size 39", "price": "$1,590"},
+        {"id": "v2", "title": "Size 40", "price": "$1,590"},
+        {"id": "v3", "title": "Size 41", "price": "$1,590"},
+        {"id": "v4", "title": "Size 42", "price": "$1,590"}
       ]
     },
     {
       "id": "2",
       "brand": "BALENCIAGA",
       "title": "Chunky Lug Suede Loafers",
-      "subtitle": "Chunky Lug Suede Loafers | ₹975.00",
+      "subtitle": "Chunky Lug Suede Loafers | $975",
       "category": "loafers",
       "price": 97500,
-      "price_formatted": "₹975.00",
+      "price_formatted": "$975",
       "material": "Oiled Tuscan suede with sculpted tread sole",
       "description": "Handcrafted low-top derbies in wheat tan suede. Heavy-duty lug sole with stacked block heel.",
       "image_primary": "{{ '71.png' | asset_url }}",
@@ -85,8 +88,8 @@
       "gallery": ["{{ '71.png' | asset_url }}", "{{ '73.png' | asset_url }}"],
       "collections": ["all"],
       "variants": [
-        {"id": "v5", "title": "Size 40", "price": "₹975.00"},
-        {"id": "v6", "title": "Size 41", "price": "₹975.00"}
+        {"id": "v5", "title": "Size 40", "price": "$975"},
+        {"id": "v6", "title": "Size 41", "price": "$975"}
       ]
     }
   {% endif %}
@@ -203,7 +206,7 @@
       </h1>
 
       <p id="carousel-product-subtitle" class="text-xs md:text-sm font-semibold text-[#666666] tracking-wide">
-        Crystals Flashtrek Sneakers | ₹1,590.00
+        Crystals Flashtrek Sneakers | $1,590
       </p>
 
       <div class="pt-2 flex justify-center w-full">
@@ -230,7 +233,7 @@
           </span>
         </div>
         <p id="hud-shoe-subtitle" class="text-xs md:text-sm font-semibold text-[#777777]">
-          Crystals Flashtrek Sneakers | ₹1,590.00
+          Crystals Flashtrek Sneakers | $1,590
         </p>
       </div>
 
@@ -256,9 +259,9 @@
             </span>
           </div>
 
-          <!-- Large Bold Price (Native Store Currency Format) -->
+          <!-- Large Bold Price (Native Store Currency Format, Clean without trailing $) -->
           <div id="hud-shoe-price" class="text-2xl sm:text-3xl md:text-4xl font-black text-[#111111] tracking-tight">
-            ₹1,590.00
+            $1,590
           </div>
         </div>
 
@@ -309,6 +312,7 @@
           <div class="ssense-acc-panel text-xs text-[#555555] space-y-1.5 mt-2">
             <p>• Upper: Suede, Leather & Technical Canvas.</p>
             <p>• Sole: Molded vulcanized rubber.</p>
+            <p>• Padded low-cut collar with reinforced heel cup.</p>
             <p>• Premium Quality Atelier Standard.</p>
           </div>
         </div>
@@ -366,6 +370,7 @@
             <div class="ssense-acc-panel text-sm text-[#555555] space-y-2 mt-3">
               <p>• Upper: Suede, Leather & Technical Canvas.</p>
               <p>• Sole: Molded vulcanized rubber.</p>
+              <p>• Padded low-cut collar with reinforced heel cup.</p>
               <p>• Premium Quality Atelier Standard.</p>
             </div>
           </div>

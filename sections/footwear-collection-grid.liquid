@@ -80,7 +80,7 @@
                 <h3 class="text-sm font-black uppercase tracking-tight text-[#111111]">{{ product.vendor | default: 'ATELIER' }}</h3>
                 <p class="text-xs font-medium text-[#777777]">{{ product.title }}</p>
               </div>
-              <span class="text-sm font-black text-[#111111]">{{ product.price | money_without_trailing_zeros }}$</span>
+              <span class="text-sm font-black text-[#111111]">{{ product.price | money }}</span>
             </div>
           </div>
         {% endfor %}
@@ -98,7 +98,7 @@
               <h3 class="text-sm font-black uppercase tracking-tight text-[#111111]">GUCCI</h3>
               <p class="text-xs font-medium text-[#777777]">Crystals Flashtrek Sneakers</p>
             </div>
-            <span class="text-sm font-black text-[#111111]">1590$</span>
+            <span class="text-sm font-black text-[#111111]">$1,590</span>
           </div>
         </div>
 
@@ -112,7 +112,7 @@
               <h3 class="text-sm font-black uppercase tracking-tight text-[#111111]">BALENCIAGA</h3>
               <p class="text-xs font-medium text-[#777777]">Chunky Lug Suede Loafers</p>
             </div>
-            <span class="text-sm font-black text-[#111111]">975$</span>
+            <span class="text-sm font-black text-[#111111]">$975</span>
           </div>
         </div>
 
@@ -126,7 +126,7 @@
               <h3 class="text-sm font-black uppercase tracking-tight text-[#111111]">PALM ANGELS</h3>
               <p class="text-xs font-medium text-[#777777]">Calfskin Minimalist Low Sneakers</p>
             </div>
-            <span class="text-sm font-black text-[#111111]">395$</span>
+            <span class="text-sm font-black text-[#111111]">$395</span>
           </div>
         </div>
 

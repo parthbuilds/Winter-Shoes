@@ -550,14 +550,24 @@ document.addEventListener('DOMContentLoaded', () => {
       hudAddCartBtn.disabled = true;
 
       try {
-        const itemToPost = (selectedVariantId && selectedVariantId !== 'default' && !isNaN(selectedVariantId))
-          ? { id: Number(selectedVariantId), quantity: 1 }
-          : { id: activeShoe.id, quantity: 1 };
+        let targetVariantId = null;
+        if (selectedVariantId && selectedVariantId !== 'default' && !isNaN(Number(selectedVariantId))) {
+          targetVariantId = Number(selectedVariantId);
+        } else if (activeShoe.variants && activeShoe.variants.length > 0 && !isNaN(Number(activeShoe.variants[0].id))) {
+          targetVariantId = Number(activeShoe.variants[0].id);
+        } else if (!isNaN(Number(activeShoe.id))) {
+          targetVariantId = Number(activeShoe.id);
+        }
+
+        if (!targetVariantId) {
+          window.location.href = '/cart';
+          return;
+        }
 
         const res = await fetch('/cart/add.js', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(itemToPost)
+          body: JSON.stringify({ id: targetVariantId, quantity: 1 })
         });
 
         const data = await res.json();
