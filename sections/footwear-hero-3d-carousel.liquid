@@ -4,6 +4,88 @@
   - Desktop: Sidebar on left margin, 3D Depth Floating Carousel, Sticky Details Frame on Right beside Tall Studio Cards
 {% endcomment %}
 
+{% assign selected_collection = collections[section.settings.collection] %}
+{% if selected_collection == blank or selected_collection.products_count == 0 %}
+  {% assign selected_collection = collections['shoes'] %}
+{% endif %}
+{% if selected_collection == blank or selected_collection.products_count == 0 %}
+  {% assign selected_collection = collections['winter-shoes'] %}
+{% endif %}
+{% if selected_collection == blank or selected_collection.products_count == 0 %}
+  {% assign selected_collection = collections.all %}
+{% endif %}
+
+<!-- Embedded High-Speed Footwear Data Island with Dynamic Shopify Products -->
+<script id="footwear-collection-data" type="application/json">
+[
+  {% if selected_collection != blank and selected_collection.products_count > 0 %}
+    {% for product in selected_collection.products %}
+      {
+        "id": {{ product.id | json }},
+        "title": {{ product.title | json }},
+        "brand": {{ product.vendor | default: 'ATELIER NOIR' | json }},
+        "category": {{ product.type | default: 'sneakers' | downcase | json }},
+        "price": {{ product.price | json }},
+        "price_formatted": "{{ product.price | money_without_trailing_zeros }}$",
+        "subtitle": "{{ product.title }} | {{ product.price | money_without_trailing_zeros }}$",
+        "image_primary": {% if product.featured_image %}{{ product.featured_image | image_url: width: 1200 | json }}{% else %}"{{ '70.png' | asset_url }}"{% endif %},
+        "image_secondary": {% if product.images.size > 1 %}{{ product.images[1] | image_url: width: 1200 | json }}{% elsif product.featured_image %}{{ product.featured_image | image_url: width: 1200 | json }}{% else %}"{{ '74.png' | asset_url }}"{% endif %},
+        "gallery": [
+          {% if product.featured_image %}{{ product.featured_image | image_url: width: 1200 | json }}{% else %}"{{ '70.png' | asset_url }}"{% endif %}
+          {% if product.images.size > 1 %}, {{ product.images[1] | image_url: width: 1200 | json }}{% endif %}
+        ],
+        "description": {{ product.description | strip_html | truncatewords: 40 | default: 'Handcrafted luxury footwear designed with premium materials.' | json }},
+        "material": "Upper: Premium Leather / Suede. Sole: Molded Rubber.",
+        "available_sizes": [39, 40, 41, 42, 43, 44, 45, 46]
+      }{% unless forloop.last %},{% endunless %}
+    {% endfor %}
+  {% else %}
+    {
+      "id": "1",
+      "brand": "GUCCI",
+      "title": "Crystals Flashtrek Sneakers",
+      "subtitle": "Crystals Flashtrek Sneakers | 1590$",
+      "category": "sneakers",
+      "price": 159000,
+      "price_formatted": "1590$",
+      "material": "Technical knit, suede & sculpted responsive sole",
+      "description": "Low-top panelled mesh and technical canvas sneakers in navy and off-white. Ergonomic cushioned footbed with responsive shock-absorbing midsole.",
+      "image_primary": "{{ '70.png' | asset_url }}",
+      "image_secondary": "{{ '74.png' | asset_url }}",
+      "gallery": ["{{ '70.png' | asset_url }}", "{{ '74.png' | asset_url }}"]
+    },
+    {
+      "id": "2",
+      "brand": "BALENCIAGA",
+      "title": "Chunky Lug Suede Loafers",
+      "subtitle": "Chunky Lug Suede Loafers | 975$",
+      "category": "loafers",
+      "price": 97500,
+      "price_formatted": "975$",
+      "material": "Oiled Tuscan suede with sculpted tread sole",
+      "description": "Handcrafted low-top derbies in wheat tan suede. Heavy-duty lug sole with stacked block heel.",
+      "image_primary": "{{ '71.png' | asset_url }}",
+      "image_secondary": "{{ '73.png' | asset_url }}",
+      "gallery": ["{{ '71.png' | asset_url }}", "{{ '73.png' | asset_url }}"]
+    },
+    {
+      "id": "3",
+      "brand": "PALM ANGELS",
+      "title": "Calfskin Minimalist Low Sneakers",
+      "subtitle": "Calfskin Minimalist Low Sneakers | 395$",
+      "category": "sneakers",
+      "price": 39500,
+      "price_formatted": "395$",
+      "material": "Smooth Italian cognac calfskin",
+      "description": "Low-top buffed calfskin sneakers in rich cognac brown. Round cap toe with herringbone tread.",
+      "image_primary": "{{ '72.png' | asset_url }}",
+      "image_secondary": "{{ '70.png' | asset_url }}",
+      "gallery": ["{{ '72.png' | asset_url }}", "{{ '70.png' | asset_url }}"]
+    }
+  {% endif %}
+]
+</script>
+
 <section 
   id="hero-carousel-section"
   class="relative w-full min-h-[88vh] bg-[#ededed] text-[#111111] flex flex-col justify-between py-4 md:py-6 px-4 md:px-12 transition-all duration-500"
@@ -30,13 +112,16 @@
     <!-- Big Bold Solid Black SHOES Section with Subcategories -->
     <div class="pt-1">
       <a href="#shoes" data-filter-category="all" class="block text-2xl md:text-3xl font-black tracking-tight text-[#111111] uppercase font-sans">
-        SHOES
+        {{ selected_collection.title | default: 'SHOES' }}
       </a>
 
-      <!-- Subcategories -->
+      <!-- Subcategories / Categories -->
       <div class="pl-2.5 mt-2.5 space-y-1 text-xs font-semibold text-[#666666]">
-        <a href="#sneakers" data-filter-category="sneakers" class="sidebar-subcat block py-0.5 text-[#111111] hover:text-black">
-          <span class="underline font-bold">Sneakers</span>
+        <a href="#all" data-filter-category="all" class="sidebar-subcat block py-0.5 text-[#111111] hover:text-black">
+          <span class="underline font-bold">All Footwear</span>
+        </a>
+        <a href="#sneakers" data-filter-category="sneakers" class="sidebar-subcat block py-0.5 text-[#777777] hover:text-[#111111] transition-colors">
+          Sneakers
         </a>
         <a href="#sandals" data-filter-category="sandals" class="sidebar-subcat block py-0.5 text-[#777777] hover:text-[#111111] transition-colors">
           Sandals
@@ -75,22 +160,22 @@
         </svg>
       </button>
 
-      <!-- Left Sibling Shoe (Upright, Flat Horizontal Shadow Directly Underneath) -->
+      <!-- Left Sibling Shoe -->
       <div id="floating-shoe-left" class="floating-shoe-slot pos-left max-w-[280px] sm:max-w-[340px] md:max-w-[420px] w-full aspect-[4/3]">
         <div class="shoe-shadow-disc"></div>
-        <img id="img-shoe-left" src="/assets/shoes/75.png" alt="Previous shoe" class="w-full h-full object-contain drop-shadow-xl pointer-events-none" />
+        <img id="img-shoe-left" src="{{ '75.png' | asset_url }}" alt="Previous shoe" class="w-full h-full object-contain drop-shadow-xl pointer-events-none" />
       </div>
 
-      <!-- Center Main Floating Shoe (Large & Crisp, Perfectly Centered under Logo) -->
+      <!-- Center Main Floating Shoe -->
       <div id="floating-shoe-center" class="floating-shoe-slot pos-center max-w-[360px] sm:max-w-[460px] md:max-w-[620px] w-full aspect-[4/3]">
         <div class="shoe-shadow-disc"></div>
-        <img id="img-shoe-center" src="/assets/shoes/70.png" alt="Active shoe" class="w-full h-full object-contain drop-shadow-2xl" />
+        <img id="img-shoe-center" src="{{ '70.png' | asset_url }}" alt="Active shoe" class="w-full h-full object-contain drop-shadow-2xl" />
       </div>
 
-      <!-- Right Sibling Shoe (Upright, Flat Horizontal Shadow Directly Underneath) -->
+      <!-- Right Sibling Shoe -->
       <div id="floating-shoe-right" class="floating-shoe-slot pos-right max-w-[280px] sm:max-w-[340px] md:max-w-[420px] w-full aspect-[4/3]">
         <div class="shoe-shadow-disc"></div>
-        <img id="img-shoe-right" src="/assets/shoes/71.png" alt="Next shoe" class="w-full h-full object-contain drop-shadow-xl pointer-events-none" />
+        <img id="img-shoe-right" src="{{ '71.png' | asset_url }}" alt="Next shoe" class="w-full h-full object-contain drop-shadow-xl pointer-events-none" />
       </div>
 
       <!-- Right Navigation Arrow Button -->
@@ -107,7 +192,7 @@
 
     </div>
 
-    <!-- State A: Centered Brand Name & SEE MORE Button (Higher positioning) -->
+    <!-- State A: Centered Brand Name & SEE MORE Button -->
     <div id="hero-carousel-meta" class="text-center space-y-1.5 -mt-2 pb-6 z-20 transition-all duration-400 w-full flex flex-col items-center justify-center">
       <h1 id="carousel-brand-heading" class="text-3xl md:text-5xl font-black tracking-tight text-[#111111] uppercase font-sans">
         ATELIER NOIR
@@ -128,7 +213,7 @@
       </div>
     </div>
 
-    <!-- State B: In-Place Selected Product Detail HUD (Left Corner: Name, Right Corner: Price & CTA) -->
+    <!-- State B: In-Place Selected Product Detail HUD -->
     <div id="in-place-detail-hud" class="w-full max-w-[1680px] mx-auto hidden opacity-0 grid grid-cols-1 md:grid-cols-12 gap-6 items-end pt-6 pb-4 border-t border-[#dedede]/80 transition-all duration-500 z-30">
       <!-- Left Corner: Brand Title + Outline SHOES + Subtitle -->
       <div class="md:col-span-7 space-y-1">
@@ -150,8 +235,8 @@
         <div class="flex items-center gap-4 sm:gap-6 flex-wrap">
           <!-- Colorway dots -->
           <div class="flex items-center space-x-2">
-            <button class="w-5 h-5 rounded-full bg-[#3d7a42] border-2 border-white ring-1 ring-black/20 cursor-pointer" title="Green"></button>
-            <button class="w-5 h-5 rounded-full bg-[#dbe84a] border-2 border-white ring-1 ring-black/20 cursor-pointer" title="Yellow"></button>
+            <button class="w-5 h-5 rounded-full bg-[#111111] border-2 border-white ring-1 ring-black/20 cursor-pointer" title="Black"></button>
+            <button class="w-5 h-5 rounded-full bg-[#ffffff] border-2 border-gray-300 ring-1 ring-black/20 cursor-pointer" title="White"></button>
           </div>
 
           <!-- Size Dropdown -->
@@ -211,10 +296,10 @@
   <!-- State C: Tall Vertical 3:4 Cards on Left + Sticky Details on Right -->
   <div id="in-place-scroll-gallery" class="max-w-[1680px] mx-auto w-full hidden opacity-0 flex flex-col lg:flex-row gap-12 pt-8 md:pt-16 pb-32 relative">
     
-    <!-- MOBILE VIEW DETAILS CONTAINER: Description and Accordions directly under HUD on Mobile -->
+    <!-- MOBILE VIEW DETAILS CONTAINER -->
     <div class="lg:hidden w-full space-y-6">
       <p id="mobile-gallery-description" class="text-sm text-[#222222] leading-relaxed font-normal">
-        Low-top panelled mesh and technical canvas sneakers in navy and off-white. Ergonomic cushioned footbed with responsive shock-absorbing midsole. Round cap toe and padded collar. Made in Italy.
+        Low-top panelled mesh and technical canvas sneakers in navy and off-white. Ergonomic cushioned footbed with responsive shock-absorbing midsole. Made in Italy.
       </p>
 
       <!-- Mobile Accordions -->
@@ -228,7 +313,7 @@
             <p>• Upper: Suede, Leather & Technical Canvas.</p>
             <p>• Sole: Molded vulcanized rubber.</p>
             <p>• Padded low-cut collar with reinforced heel cup.</p>
-            <p>• Made in Italy.</p>
+            <p>• Premium Quality Atelier Standard.</p>
           </div>
         </div>
 
@@ -242,31 +327,15 @@
             <p>• Complimentary 30-day returns with prepaid shipping label.</p>
           </div>
         </div>
-
-        <div class="border-b border-[#dedede] pb-3">
-          <button type="button" class="ssense-acc-toggle w-full flex justify-between items-center text-sm font-bold text-[#111111] py-1 cursor-pointer">
-            <span>Reviews (28)</span>
-            <span class="acc-chevron text-xs text-[#888888]">⌵</span>
-          </button>
-          <div class="ssense-acc-panel hidden text-xs text-[#555555] space-y-2 mt-2">
-            <div class="bg-white p-4 rounded-xl border border-[#dedede]">
-              <div class="flex justify-between text-xs font-bold text-[#111111] mb-1">
-                <span>Marc D. (Verified Buyer)</span>
-                <span class="text-amber-500">★★★★★</span>
-              </div>
-              <p class="text-xs text-[#666666]">"The silhouette looks incredible in person. Extremely comfortable footbed."</p>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
 
-    <!-- LEFT COLUMN: Tall Studio Photo Cards (Big Prominent Shoes) -->
+    <!-- LEFT COLUMN: Tall Studio Photo Cards -->
     <div class="w-full lg:w-7/12 space-y-8 md:space-y-12">
       <div class="tall-studio-card">
         <img 
           id="gallery-photo-front"
-          src="/assets/shoes/70.png" 
+          src="{{ '70.png' | asset_url }}" 
           alt="Studio perspective primary" 
           class="max-h-[320px] md:max-h-[560px] w-auto max-w-[92%] object-contain drop-shadow-2xl"
         />
@@ -275,19 +344,19 @@
       <div class="tall-studio-card">
         <img 
           id="gallery-photo-heel"
-          src="/assets/shoes/74.png" 
+          src="{{ '74.png' | asset_url }}" 
           alt="Studio perspective secondary" 
           class="max-h-[320px] md:max-h-[560px] w-auto max-w-[92%] object-contain drop-shadow-2xl"
         />
       </div>
     </div>
 
-    <!-- DESKTOP RIGHT COLUMN: Sticky Details Panel (Pinned to Viewport across Full Scroll) -->
+    <!-- DESKTOP RIGHT COLUMN: Sticky Details Panel -->
     <div class="hidden lg:block lg:w-5/12">
       <div class="sticky-details-container space-y-8 bg-[#ededed] py-2">
         <div class="space-y-4">
           <p id="gallery-full-description" class="text-base md:text-lg text-[#222222] leading-relaxed font-normal">
-            Low-top panelled mesh and technical canvas sneakers in navy and off-white. Ergonomic cushioned footbed with responsive shock-absorbing midsole. Round cap toe and padded collar. Made in Italy.
+            Low-top panelled mesh and technical canvas sneakers in navy and off-white. Ergonomic cushioned footbed with responsive shock-absorbing midsole. Made in Italy.
           </p>
         </div>
 
@@ -302,7 +371,7 @@
               <p>• Upper: Suede, Leather & Technical Canvas.</p>
               <p>• Sole: Molded vulcanized rubber.</p>
               <p>• Padded low-cut collar with reinforced heel cup.</p>
-              <p>• Made in Italy.</p>
+              <p>• Premium Quality Atelier Standard.</p>
             </div>
           </div>
 
@@ -314,22 +383,6 @@
             <div class="ssense-acc-panel hidden text-sm text-[#555555] space-y-2 mt-3">
               <p>• Express international delivery by DHL.</p>
               <p>• Complimentary 30-day returns with prepaid shipping label.</p>
-            </div>
-          </div>
-
-          <div class="border-b border-[#dedede] pb-4">
-            <button type="button" class="ssense-acc-toggle w-full flex justify-between items-center text-base font-bold text-[#111111] py-1 cursor-pointer">
-              <span>Reviews (28)</span>
-              <span class="acc-chevron text-xs text-[#888888]">⌵</span>
-            </button>
-            <div class="ssense-acc-panel hidden text-sm text-[#555555] space-y-3 mt-3">
-              <div class="bg-white p-5 rounded-2xl border border-[#dedede]">
-                <div class="flex justify-between text-sm font-bold text-[#111111] mb-1.5">
-                  <span>Marc D. (Verified Buyer)</span>
-                  <span class="text-amber-500">★★★★★</span>
-                </div>
-                <p class="text-sm text-[#666666]">"The silhouette looks incredible in person. Extremely comfortable footbed."</p>
-              </div>
             </div>
           </div>
         </div>

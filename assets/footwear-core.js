@@ -368,7 +368,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 8. IN-PLACE DETAIL TRANSITION
   window.showProductDetail = function(productId) {
-    const shoe = Store.shoes.find(s => s.id == productId) || Store.filteredShoes[Store.currentIndex] || Store.shoes[0];
+    const shoe = Store.shoes.find(s => String(s.id) === String(productId)) || Store.filteredShoes[Store.currentIndex] || Store.shoes[0];
     if (!shoe) return;
 
     Store.previousView = Store.currentView;

@@ -2,8 +2,19 @@
   Section: Footwear Collection Grid View
   - Dedicated Responsive Grid with Dual Image Hover Animation
   - Clean Back to Carousel transition
-  - Responsive Cards with Brand, Title, Price and Hover State
+  - Dynamic Shopify Product Cards with Brand, Title, Price, and Image Hover State
 {% endcomment %}
+
+{% assign grid_collection = collections[section.settings.collection] %}
+{% if grid_collection == blank or grid_collection.products_count == 0 %}
+  {% assign grid_collection = collections['shoes'] %}
+{% endif %}
+{% if grid_collection == blank or grid_collection.products_count == 0 %}
+  {% assign grid_collection = collections['winter-shoes'] %}
+{% endif %}
+{% if grid_collection == blank or grid_collection.products_count == 0 %}
+  {% assign grid_collection = collections.all %}
+{% endif %}
 
 <section 
   id="collection-grid-section"
@@ -17,10 +28,10 @@
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-6 border-b border-[#dedede]">
       <div>
         <h2 class="text-3xl md:text-4xl font-black uppercase tracking-tight font-sans text-[#111111]">
-          FOOTWEAR COLLECTION
+          {{ grid_collection.title | default: 'FOOTWEAR COLLECTION' }}
         </h2>
         <p class="text-xs font-sans font-semibold text-[#777777] mt-1">
-          Showing all luxury footwear curated by SSENSE
+          Showing luxury footwear curated for your atelier
         </p>
       </div>
 
@@ -41,95 +52,85 @@
     <!-- 3-Column Responsive Product Card Grid -->
     <div id="product-cards-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
       
-      <!-- 1. ATELIER NOIR -->
-      <div class="shoe-card-item product-grid-item flex flex-col justify-between p-6 bg-white rounded-2xl border border-[#dedede]" data-product-id="1" data-category="sneakers">
-        <div class="relative w-full aspect-[4/3] flex items-center justify-center p-4 overflow-hidden">
-          <img src="/assets/shoes/70.png" alt="Atelier Noir Sneakers" class="img-primary-view absolute inset-0 w-full h-full object-contain p-2" />
-          <img src="/assets/shoes/74.png" alt="Atelier Noir Sneakers Alternate" class="img-hover-view absolute inset-0 w-full h-full object-contain p-2" />
-        </div>
-        <div class="pt-4 flex justify-between items-baseline border-t border-[#f0f0f0] mt-2">
-          <div>
-            <h3 class="text-sm font-black uppercase tracking-tight text-[#111111]">ATELIER NOIR</h3>
-            <p class="text-xs font-medium text-[#777777]">Crystals Kinetic High-Top</p>
+      {% if grid_collection != blank and grid_collection.products_count > 0 %}
+        {% for product in grid_collection.products %}
+          {% assign img_1 = product.featured_image %}
+          {% assign img_2 = product.images[1] | default: product.featured_image %}
+          
+          <div 
+            class="shoe-card-item product-grid-item flex flex-col justify-between p-6 bg-white rounded-2xl border border-[#dedede] cursor-pointer hover:border-black transition-all" 
+            data-product-id="{{ product.id }}" 
+            data-category="{{ product.type | default: 'sneakers' | downcase }}"
+            onclick="window.showProductDetail({{ product.id | json }})"
+          >
+            <div class="relative w-full aspect-[4/3] flex items-center justify-center p-4 overflow-hidden">
+              <img 
+                src="{% if img_1 %}{{ img_1 | image_url: width: 800 }}{% else %}{{ '70.png' | asset_url }}{% endif %}" 
+                alt="{{ product.title | escape }}" 
+                class="img-primary-view absolute inset-0 w-full h-full object-contain p-2 transition-transform duration-300 hover:scale-105" 
+              />
+              <img 
+                src="{% if img_2 %}{{ img_2 | image_url: width: 800 }}{% else %}{{ '74.png' | asset_url }}{% endif %}" 
+                alt="{{ product.title | escape }} Alternate" 
+                class="img-hover-view absolute inset-0 w-full h-full object-contain p-2 transition-transform duration-300 hover:scale-105" 
+              />
+            </div>
+            <div class="pt-4 flex justify-between items-baseline border-t border-[#f0f0f0] mt-2">
+              <div>
+                <h3 class="text-sm font-black uppercase tracking-tight text-[#111111]">{{ product.vendor | default: 'ATELIER' }}</h3>
+                <p class="text-xs font-medium text-[#777777]">{{ product.title }}</p>
+              </div>
+              <span class="text-sm font-black text-[#111111]">{{ product.price | money_without_trailing_zeros }}$</span>
+            </div>
           </div>
-          <span class="text-sm font-black text-[#111111]">1590$</span>
-        </div>
-      </div>
+        {% endfor %}
 
-      <!-- 2. STUDIO EDITION -->
-      <div class="shoe-card-item product-grid-item flex flex-col justify-between p-6 bg-white rounded-2xl border border-[#dedede]" data-product-id="2" data-category="loafers">
-        <div class="relative w-full aspect-[4/3] flex items-center justify-center p-4 overflow-hidden">
-          <img src="/assets/shoes/71.png" alt="Studio Edition Loafers" class="img-primary-view absolute inset-0 w-full h-full object-contain p-2" />
-          <img src="/assets/shoes/75.png" alt="Studio Edition Loafers Alternate" class="img-hover-view absolute inset-0 w-full h-full object-contain p-2" />
-        </div>
-        <div class="pt-4 flex justify-between items-baseline border-t border-[#f0f0f0] mt-2">
-          <div>
-            <h3 class="text-sm font-black uppercase tracking-tight text-[#111111]">STUDIO EDITION</h3>
-            <p class="text-xs font-medium text-[#777777]">Chunky Suede Platform Loafers</p>
-          </div>
-          <span class="text-sm font-black text-[#111111]">975$</span>
-        </div>
-      </div>
+      {% else %}
 
-      <!-- 3. ESSENTIALS LAB -->
-      <div class="shoe-card-item product-grid-item flex flex-col justify-between p-6 bg-white rounded-2xl border border-[#dedede]" data-product-id="3" data-category="sneakers">
-        <div class="relative w-full aspect-[4/3] flex items-center justify-center p-4 overflow-hidden">
-          <img src="/assets/shoes/72.png" alt="Essentials Lab Sneakers" class="img-primary-view absolute inset-0 w-full h-full object-contain p-2" />
-          <img src="/assets/shoes/70.png" alt="Essentials Lab Sneakers Alternate" class="img-hover-view absolute inset-0 w-full h-full object-contain p-2" />
-        </div>
-        <div class="pt-4 flex justify-between items-baseline border-t border-[#f0f0f0] mt-2">
-          <div>
-            <h3 class="text-sm font-black uppercase tracking-tight text-[#111111]">ESSENTIALS LAB</h3>
-            <p class="text-xs font-medium text-[#777777]">Calfskin Minimalist Court Sneakers</p>
+        <!-- Fallback Cards if store has no products yet -->
+        <div class="shoe-card-item product-grid-item flex flex-col justify-between p-6 bg-white rounded-2xl border border-[#dedede] cursor-pointer" data-product-id="1" data-category="sneakers" onclick="window.showProductDetail('1')">
+          <div class="relative w-full aspect-[4/3] flex items-center justify-center p-4 overflow-hidden">
+            <img src="{{ '70.png' | asset_url }}" alt="Gucci Sneakers" class="img-primary-view absolute inset-0 w-full h-full object-contain p-2" />
+            <img src="{{ '74.png' | asset_url }}" alt="Gucci Sneakers Alternate" class="img-hover-view absolute inset-0 w-full h-full object-contain p-2" />
           </div>
-          <span class="text-sm font-black text-[#111111]">395$</span>
+          <div class="pt-4 flex justify-between items-baseline border-t border-[#f0f0f0] mt-2">
+            <div>
+              <h3 class="text-sm font-black uppercase tracking-tight text-[#111111]">GUCCI</h3>
+              <p class="text-xs font-medium text-[#777777]">Crystals Flashtrek Sneakers</p>
+            </div>
+            <span class="text-sm font-black text-[#111111]">1590$</span>
+          </div>
         </div>
-      </div>
 
-      <!-- 4. HERITAGE ATELIER -->
-      <div class="shoe-card-item product-grid-item flex flex-col justify-between p-6 bg-white rounded-2xl border border-[#dedede]" data-product-id="4" data-category="boots">
-        <div class="relative w-full aspect-[4/3] flex items-center justify-center p-4 overflow-hidden">
-          <img src="/assets/shoes/73.png" alt="Heritage Atelier Brogues" class="img-primary-view absolute inset-0 w-full h-full object-contain p-2" />
-          <img src="/assets/shoes/71.png" alt="Heritage Atelier Brogues Alternate" class="img-hover-view absolute inset-0 w-full h-full object-contain p-2" />
-        </div>
-        <div class="pt-4 flex justify-between items-baseline border-t border-[#f0f0f0] mt-2">
-          <div>
-            <h3 class="text-sm font-black uppercase tracking-tight text-[#111111]">HERITAGE ATELIER</h3>
-            <p class="text-xs font-medium text-[#777777]">Perforated Suede Wingtip Brogues</p>
+        <div class="shoe-card-item product-grid-item flex flex-col justify-between p-6 bg-white rounded-2xl border border-[#dedede] cursor-pointer" data-product-id="2" data-category="loafers" onclick="window.showProductDetail('2')">
+          <div class="relative w-full aspect-[4/3] flex items-center justify-center p-4 overflow-hidden">
+            <img src="{{ '71.png' | asset_url }}" alt="Balenciaga Loafers" class="img-primary-view absolute inset-0 w-full h-full object-contain p-2" />
+            <img src="{{ '73.png' | asset_url }}" alt="Balenciaga Loafers Alternate" class="img-hover-view absolute inset-0 w-full h-full object-contain p-2" />
           </div>
-          <span class="text-sm font-black text-[#111111]">350$</span>
+          <div class="pt-4 flex justify-between items-baseline border-t border-[#f0f0f0] mt-2">
+            <div>
+              <h3 class="text-sm font-black uppercase tracking-tight text-[#111111]">BALENCIAGA</h3>
+              <p class="text-xs font-medium text-[#777777]">Chunky Lug Suede Loafers</p>
+            </div>
+            <span class="text-sm font-black text-[#111111]">975$</span>
+          </div>
         </div>
-      </div>
 
-      <!-- 5. MONOCHROME STUDIO -->
-      <div class="shoe-card-item product-grid-item flex flex-col justify-between p-6 bg-white rounded-2xl border border-[#dedede]" data-product-id="5" data-category="sneakers">
-        <div class="relative w-full aspect-[4/3] flex items-center justify-center p-4 overflow-hidden">
-          <img src="/assets/shoes/74.png" alt="Monochrome Studio Sneakers" class="img-primary-view absolute inset-0 w-full h-full object-contain p-2" />
-          <img src="/assets/shoes/72.png" alt="Monochrome Studio Sneakers Alternate" class="img-hover-view absolute inset-0 w-full h-full object-contain p-2" />
-        </div>
-        <div class="pt-4 flex justify-between items-baseline border-t border-[#f0f0f0] mt-2">
-          <div>
-            <h3 class="text-sm font-black uppercase tracking-tight text-[#111111]">MONOCHROME STUDIO</h3>
-            <p class="text-xs font-medium text-[#777777]">Navy Grain Leather Sneakers</p>
+        <div class="shoe-card-item product-grid-item flex flex-col justify-between p-6 bg-white rounded-2xl border border-[#dedede] cursor-pointer" data-product-id="3" data-category="sneakers" onclick="window.showProductDetail('3')">
+          <div class="relative w-full aspect-[4/3] flex items-center justify-center p-4 overflow-hidden">
+            <img src="{{ '72.png' | asset_url }}" alt="Palm Angels Sneakers" class="img-primary-view absolute inset-0 w-full h-full object-contain p-2" />
+            <img src="{{ '70.png' | asset_url }}" alt="Palm Angels Sneakers Alternate" class="img-hover-view absolute inset-0 w-full h-full object-contain p-2" />
           </div>
-          <span class="text-sm font-black text-[#111111]">850$</span>
+          <div class="pt-4 flex justify-between items-baseline border-t border-[#f0f0f0] mt-2">
+            <div>
+              <h3 class="text-sm font-black uppercase tracking-tight text-[#111111]">PALM ANGELS</h3>
+              <p class="text-xs font-medium text-[#777777]">Calfskin Minimalist Low Sneakers</p>
+            </div>
+            <span class="text-sm font-black text-[#111111]">395$</span>
+          </div>
         </div>
-      </div>
 
-      <!-- 6. AVANT GARDE -->
-      <div class="shoe-card-item product-grid-item flex flex-col justify-between p-6 bg-white rounded-2xl border border-[#dedede]" data-product-id="6" data-category="sandals">
-        <div class="relative w-full aspect-[4/3] flex items-center justify-center p-4 overflow-hidden">
-          <img src="/assets/shoes/75.png" alt="Avant Garde Skate" class="img-primary-view absolute inset-0 w-full h-full object-contain p-2" />
-          <img src="/assets/shoes/73.png" alt="Avant Garde Skate Alternate" class="img-hover-view absolute inset-0 w-full h-full object-contain p-2" />
-        </div>
-        <div class="pt-4 flex justify-between items-baseline border-t border-[#f0f0f0] mt-2">
-          <div>
-            <h3 class="text-sm font-black uppercase tracking-tight text-[#111111]">AVANT GARDE</h3>
-            <p class="text-xs font-medium text-[#777777]">Dual Canvas Skate Sneakers</p>
-          </div>
-          <span class="text-sm font-black text-[#111111]">650$</span>
-        </div>
-      </div>
+      {% endif %}
 
     </div>
 
@@ -139,7 +140,13 @@
 {% schema %}
 {
   "name": "Footwear Collection Grid",
-  "settings": [],
+  "settings": [
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Footwear Collection"
+    }
+  ],
   "presets": [
     {
       "name": "Footwear Collection Grid"

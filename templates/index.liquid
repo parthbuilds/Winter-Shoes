@@ -3,33 +3,6 @@
   SSENSE Luxury Footwear Atelier Suite
 {% endcomment %}
 
-<!-- Embedded High-Speed Footwear Data Island with User Provided Transparent Shoes -->
-<script id="footwear-collection-data" type="application/json">
-[
-  {% for product in collections['shoes'].products %}
-    {
-      "id": {{ product.id | json }},
-      "title": {{ product.title | json }},
-      "brand": {{ product.vendor | default: 'ATELIER NOIR' | json }},
-      "category": {{ product.type | default: 'sneakers' | downcase | json }},
-      "price": {{ product.price | json }},
-      "price_formatted": "{{ product.price | money_without_trailing_zeros }}$",
-      "subtitle": "{{ product.title }} | {{ product.price | money_without_trailing_zeros }}$",
-      "image_primary": {{ product.featured_image | image_url: width: 1200 | json }},
-      "image_secondary": {{ product.images[1] | default: product.featured_image | image_url: width: 1200 | json }},
-      "gallery": [
-        {{ product.featured_image | image_url: width: 1200 | json }},
-        {{ product.images[1] | default: product.featured_image | image_url: width: 1200 | json }}
-      ],
-      "description": {{ product.description | strip_html | truncatewords: 40 | json }},
-      "material": "Upper: Leather / Suede. Sole: Molded Rubber. Made in Italy.",
-      "available_sizes": [39, 40, 41, 42, 43, 44, 45, 46],
-      "colorways": ["#111111", "#ffffff"]
-    }{% unless forloop.last %},{% endunless %}
-  {% endfor %}
-]
-</script>
-
 <!-- Section 1: Hero 3D Carousel & In-Place Detail Suite -->
 {% section 'footwear-hero-3d-carousel' %}
 
