@@ -58,12 +58,25 @@
           {% assign img_2 = product.images[1] | default: product.featured_image %}
           
           <div 
-            class="shoe-card-item product-grid-item flex flex-col justify-between p-6 bg-white rounded-2xl border border-[#dedede] cursor-pointer hover:border-black transition-all" 
+            class="shoe-card-item product-grid-item flex flex-col justify-between p-6 bg-white rounded-2xl border border-[#dedede] cursor-pointer hover:border-black transition-all relative" 
             data-product-id="{{ product.id }}" 
             data-category="{{ product.type | default: 'sneakers' | downcase }}"
             onclick="window.showProductDetail({{ product.id | json }})"
           >
             <div class="relative w-full aspect-[4/3] flex items-center justify-center p-4 overflow-hidden">
+              <!-- Wishlist Heart Button -->
+              <button 
+                type="button" 
+                class="wishlist-btn absolute top-1 right-1 z-20 w-8 h-8 rounded-full bg-white/90 border border-[#dedede] hover:border-black flex items-center justify-center text-[#111111] transition-all shadow-sm"
+                data-wishlist-id="{{ product.id }}"
+                onclick="event.stopPropagation(); window.toggleWishlist('{{ product.id }}')"
+                aria-label="Add to Wishlist"
+              >
+                <svg class="w-4 h-4 wishlist-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                </svg>
+              </button>
+
               <img 
                 src="{% if img_1 %}{{ img_1 | image_url: width: 800 }}{% else %}{{ '70.png' | asset_url }}{% endif %}" 
                 alt="{{ product.title | escape }}" 
@@ -75,12 +88,14 @@
                 class="img-hover-view absolute inset-0 w-full h-full object-contain p-2 transition-transform duration-300 hover:scale-105" 
               />
             </div>
-            <div class="pt-4 flex justify-between items-baseline border-t border-[#f0f0f0] mt-2">
+            <div class="pt-4 flex justify-between items-start border-t border-[#f0f0f0] mt-2 gap-2">
               <div>
-                <h3 class="text-sm font-black uppercase tracking-tight text-[#111111]">{{ product.vendor | default: 'ATELIER' }}</h3>
-                <p class="text-xs font-medium text-[#777777]">{{ product.title }}</p>
+                <h3 class="text-sm font-black uppercase tracking-tight text-[#111111] leading-snug">{{ product.title }}</h3>
+                {% if product.vendor and product.vendor != product.title %}
+                  <p class="text-xs font-semibold uppercase text-[#777777] mt-0.5">{{ product.vendor }}</p>
+                {% endif %}
               </div>
-              <span class="text-sm font-black text-[#111111]">{{ product.price | money }}</span>
+              <span class="text-sm font-black text-[#111111] whitespace-nowrap">{{ product.price | money }}</span>
             </div>
           </div>
         {% endfor %}

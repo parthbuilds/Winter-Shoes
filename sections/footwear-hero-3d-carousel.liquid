@@ -37,6 +37,8 @@
           {% if product.images.size > 1 %}, {{ product.images[1] | image_url: width: 1200 | json }}{% endif %}
         ],
         "description": {{ product.description | strip_html | truncatewords: 40 | default: 'Handcrafted luxury footwear designed with premium materials.' | json }},
+        "details": "• Upper: Premium Leather & Suede\n• Sole: Molded vulcanized rubber\n• Heel: Reinforced heel cup\n• Origin: Crafted with care in Italy",
+        "delivery": "• Express international shipping via DHL\n• Free delivery on orders over $150\n• Complimentary 30-day returns with prepaid shipping label",
         "material": "Upper: Premium Leather / Suede. Sole: Molded Rubber.",
         "collections": [{% for c in product.collections %}{{ c.handle | json }}{% unless forloop.last %},{% endunless %}{% endfor %}],
         "variants": [
@@ -130,21 +132,18 @@
         <a href="#all" data-filter-collection="all" class="sidebar-subcat block py-0.5 text-[#111111] font-bold">
           <span class="underline">All Footwear</span>
         </a>
-        {% assign col_count = 0 %}
+        <a href="#shoes" data-filter-collection="shoes" data-filter-category="shoes" class="sidebar-subcat block py-0.5 text-[#777777] hover:text-[#111111]">Shoes</a>
+        <a href="#sliders" data-filter-collection="sliders" data-filter-category="sliders" class="sidebar-subcat block py-0.5 text-[#777777] hover:text-[#111111]">Sliders</a>
+        <a href="#sneakers" data-filter-collection="sneakers" data-filter-category="sneakers" class="sidebar-subcat block py-0.5 text-[#777777] hover:text-[#111111]">Sneakers</a>
+        <a href="#loafers" data-filter-collection="loafers" data-filter-category="loafers" class="sidebar-subcat block py-0.5 text-[#777777] hover:text-[#111111]">Loafers</a>
+        <a href="#boots" data-filter-collection="boots" data-filter-category="boots" class="sidebar-subcat block py-0.5 text-[#777777] hover:text-[#111111]">Boots</a>
         {% for col in collections %}
-          {% unless col.handle == 'frontpage' %}
-            {% assign col_count = col_count | plus: 1 %}
+          {% unless col.handle == 'frontpage' or col.handle == 'shoes' or col.handle == 'sliders' or col.handle == 'sneakers' or col.handle == 'loafers' or col.handle == 'boots' %}
             <a href="{{ col.url }}" data-filter-collection="{{ col.handle }}" class="sidebar-subcat block py-0.5 text-[#777777] hover:text-[#111111] transition-colors">
               {{ col.title }}
             </a>
           {% endunless %}
         {% endfor %}
-        {% if col_count == 0 %}
-          <a href="#sneakers" data-filter-category="sneakers" class="sidebar-subcat block py-0.5 text-[#777777] hover:text-[#111111]">Sneakers</a>
-          <a href="#sandals" data-filter-category="sandals" class="sidebar-subcat block py-0.5 text-[#777777] hover:text-[#111111]">Sandals</a>
-          <a href="#loafers" data-filter-category="loafers" class="sidebar-subcat block py-0.5 text-[#777777] hover:text-[#111111]">Loafers</a>
-          <a href="#boots" data-filter-category="boots" class="sidebar-subcat block py-0.5 text-[#777777] hover:text-[#111111]">Boots</a>
-        {% endif %}
       </div>
     </div>
   </div>
@@ -279,11 +278,12 @@
           </button>
 
           <button 
+            id="hud-wishlist-action"
             type="button" 
             class="w-11 h-11 rounded-full border border-[#cccccc] bg-white hover:border-[#111111] flex items-center justify-center text-[#111111] transition-colors cursor-pointer shadow-sm"
             aria-label="Wishlist"
           >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-4 h-4 wishlist-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
             </svg>
           </button>
@@ -309,7 +309,7 @@
             <span>Details</span>
             <span class="acc-chevron text-xs text-[#888888]">⌵</span>
           </button>
-          <div class="ssense-acc-panel text-xs text-[#555555] space-y-1.5 mt-2">
+          <div id="mobile-gallery-details" class="ssense-acc-panel text-xs text-[#555555] space-y-1.5 mt-2">
             <p>• Upper: Suede, Leather & Technical Canvas.</p>
             <p>• Sole: Molded vulcanized rubber.</p>
             <p>• Padded low-cut collar with reinforced heel cup.</p>
@@ -322,7 +322,7 @@
             <span>Free Delivery and Returns</span>
             <span class="acc-chevron text-xs text-[#888888]">⌵</span>
           </button>
-          <div class="ssense-acc-panel hidden text-xs text-[#555555] space-y-1.5 mt-2">
+          <div id="mobile-gallery-delivery" class="ssense-acc-panel hidden text-xs text-[#555555] space-y-1.5 mt-2">
             <p>• Express international delivery by DHL.</p>
             <p>• Complimentary 30-day returns with prepaid shipping label.</p>
           </div>
@@ -367,7 +367,7 @@
               <span>Details</span>
               <span class="acc-chevron text-xs text-[#888888]">⌵</span>
             </button>
-            <div class="ssense-acc-panel text-sm text-[#555555] space-y-2 mt-3">
+            <div id="gallery-full-details" class="ssense-acc-panel text-sm text-[#555555] space-y-2 mt-3">
               <p>• Upper: Suede, Leather & Technical Canvas.</p>
               <p>• Sole: Molded vulcanized rubber.</p>
               <p>• Padded low-cut collar with reinforced heel cup.</p>
@@ -380,7 +380,7 @@
               <span>Free Delivery and Returns</span>
               <span class="acc-chevron text-xs text-[#888888]">⌵</span>
             </button>
-            <div class="ssense-acc-panel hidden text-sm text-[#555555] space-y-2 mt-3">
+            <div id="gallery-full-delivery" class="ssense-acc-panel hidden text-sm text-[#555555] space-y-2 mt-3">
               <p>• Express international delivery by DHL.</p>
               <p>• Complimentary 30-day returns with prepaid shipping label.</p>
             </div>

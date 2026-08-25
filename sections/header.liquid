@@ -79,9 +79,12 @@
 
   <!-- Right: Wishlist, Blog, Search, Bag, Language & View Switcher -->
   <div class="flex items-center justify-end space-x-3 md:space-x-5 text-xs font-sans tracking-widest uppercase z-20">
-    {% if section.settings.show_wishlist %}
-      <a href="#wishlist" class="hidden lg:inline font-semibold text-[#777777] hover:text-[#111111] transition-colors">WISHLIST</a>
-    {% endif %}
+    <a href="/wishlist" class="relative font-semibold text-[#777777] hover:text-[#111111] transition-colors flex items-center gap-1">
+      <span>WISHLIST</span>
+      <span id="nav-wishlist-badge" class="hidden bg-[#111111] text-white text-[9px] w-3.5 h-3.5 rounded-full flex items-center justify-center font-sans font-bold">
+        0
+      </span>
+    </a>
     
     <!-- Search icon -->
     <button type="button" class="text-[#111111] hover:opacity-60 transition-opacity p-1" aria-label="Search">

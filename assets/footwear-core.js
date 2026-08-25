@@ -147,10 +147,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (brandHeading && current) {
-      brandHeading.textContent = current.brand;
+      brandHeading.textContent = current.title || current.brand;
     }
     if (productSubtitle && current) {
-      productSubtitle.textContent = current.subtitle || `${current.title} | ${current.price_formatted}`;
+      productSubtitle.textContent = current.subtitle || `${current.brand} | ${current.price_formatted}`;
     }
   }
 
@@ -252,18 +252,31 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    if (Store.activeCategory === 'all' || !Store.activeCategory) {
-      Store.filteredShoes = [...Store.shoes];
+    let matches = [];
+    if (target === 'all' || !target) {
+      matches = [...Store.shoes];
     } else {
-      Store.filteredShoes = Store.shoes.filter(s => 
-        (s.collections || []).includes(Store.activeCategory) ||
-        (s.category || '').toLowerCase() === Store.activeCategory ||
-        (s.title || '').toLowerCase().includes(Store.activeCategory)
-      );
-      if (Store.filteredShoes.length === 0) {
-        Store.filteredShoes = [...Store.shoes];
-      }
+      const sliderTerms = ['sliders', 'slider', 'slides', 'slide', 'sandals', 'sandal'];
+      const isSliderTarget = sliderTerms.includes(target);
+
+      matches = Store.shoes.filter(s => {
+        const cat = (s.category || '').toLowerCase();
+        const title = (s.title || '').toLowerCase();
+        const cols = (s.collections || []).map(c => (c || '').toLowerCase());
+
+        if (isSliderTarget) {
+          return sliderTerms.some(term => cat.includes(term) || title.includes(term) || cols.includes(term));
+        }
+
+        if (target === 'shoes') {
+          return true; // 'shoes' collection covers all footwear items
+        }
+
+        return cols.includes(target) || cat === target || cat.includes(target) || title.includes(target);
+      });
     }
+
+    Store.filteredShoes = matches.length > 0 ? matches : [...Store.shoes];
 
     Store.currentIndex = 0;
     renderCarousel('next');
@@ -271,8 +284,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // Filter cards in grid view
     document.querySelectorAll('.shoe-card-item').forEach(card => {
       const cCat = (card.dataset.category || '').toLowerCase();
-      const match = (Store.activeCategory === 'all' || cCat === Store.activeCategory || cCat.includes(Store.activeCategory));
-      card.style.display = match ? 'flex' : 'none';
+      const cId = card.dataset.productId;
+      const cardShoe = Store.shoes.find(s => String(s.id) === String(cId));
+      
+      let isMatch = false;
+      if (target === 'all' || target === 'shoes') {
+        isMatch = true;
+      } else if (['sliders', 'slider', 'slides', 'slide', 'sandals', 'sandal'].includes(target)) {
+        isMatch = ['sliders', 'slider', 'slides', 'slide', 'sandals', 'sandal'].some(t => 
+          cCat.includes(t) || (cardShoe && (cardShoe.title.toLowerCase().includes(t) || (cardShoe.collections || []).includes(t)))
+        );
+      } else {
+        isMatch = cCat.includes(target) || (cardShoe && (cardShoe.title.toLowerCase().includes(target) || (cardShoe.collections || []).includes(target)));
+      }
+
+      card.style.display = isMatch ? 'flex' : 'none';
     });
 
     closeMobileDrawer();
@@ -381,9 +407,17 @@ document.addEventListener('DOMContentLoaded', () => {
       heroSection.classList.remove('hidden');
     }
 
-    if (hudBrandTitle) hudBrandTitle.textContent = shoe.brand;
-    if (hudShoeSubtitle) hudShoeSubtitle.textContent = shoe.subtitle || `${shoe.title} | ${shoe.price_formatted}`;
+    if (hudBrandTitle) hudBrandTitle.textContent = shoe.title || shoe.brand;
+    if (hudShoeSubtitle) hudShoeSubtitle.textContent = (shoe.brand && shoe.brand !== shoe.title ? shoe.brand + ' • ' : '') + shoe.price_formatted;
     if (hudShoePrice) hudShoePrice.textContent = shoe.price_formatted;
+
+    // Update Wishlist action on HUD
+    const hudWishlistBtn = document.getElementById('hud-wishlist-action');
+    if (hudWishlistBtn) {
+      hudWishlistBtn.setAttribute('data-wishlist-id', shoe.id);
+      hudWishlistBtn.onclick = () => window.toggleWishlist(shoe.id);
+      updateWishlistIconState(hudWishlistBtn, isProductWishlisted(shoe.id));
+    }
 
     // Populate Dynamic Variant Dropdown
     if (hudSizeDropdown) {
@@ -409,9 +443,34 @@ document.addEventListener('DOMContentLoaded', () => {
     if (imgCenter) imgCenter.src = shoe.image_primary;
     if (galleryPhotoFront) galleryPhotoFront.src = gallery[0] || shoe.image_primary;
     if (galleryPhotoHeel) galleryPhotoHeel.src = gallery[1] || shoe.image_secondary || gallery[0];
+
+    // Per-Product Descriptions, Details, and Free Delivery & Returns
     const mobileGalleryDesc = document.getElementById('mobile-gallery-description');
     if (galleryFullDesc) galleryFullDesc.textContent = shoe.description || shoe.material;
     if (mobileGalleryDesc) mobileGalleryDesc.textContent = shoe.description || shoe.material;
+
+    // Helper to format multiline bullet points or text
+    function formatDetailsHtml(rawText, fallbackText) {
+      const text = rawText || fallbackText;
+      if (!text) return '';
+      return text.split('\n').filter(Boolean).map(line => `<p>${line.trim()}</p>`).join('');
+    }
+
+    const defaultDetails = "• Upper: Premium Leather & Suede\n• Sole: Molded vulcanized rubber\n• Heel: Reinforced heel cup\n• Care: Professional leather clean";
+    const defaultDelivery = "• Express international shipping by DHL (2-3 business days)\n• Complimentary 30-day returns with prepaid shipping label";
+
+    const fullDetailsElem = document.getElementById('gallery-full-details');
+    const mobileDetailsElem = document.getElementById('mobile-gallery-details');
+    const fullDeliveryElem = document.getElementById('gallery-full-delivery');
+    const mobileDeliveryElem = document.getElementById('mobile-gallery-delivery');
+
+    const detailsHtml = formatDetailsHtml(shoe.details, defaultDetails);
+    const deliveryHtml = formatDetailsHtml(shoe.delivery, defaultDelivery);
+
+    if (fullDetailsElem) fullDetailsElem.innerHTML = detailsHtml;
+    if (mobileDetailsElem) mobileDetailsElem.innerHTML = detailsHtml;
+    if (fullDeliveryElem) fullDeliveryElem.innerHTML = deliveryHtml;
+    if (mobileDeliveryElem) mobileDeliveryElem.innerHTML = deliveryHtml;
 
     if (window.gsap) {
       const tl = gsap.timeline();
@@ -555,13 +614,8 @@ document.addEventListener('DOMContentLoaded', () => {
           targetVariantId = Number(selectedVariantId);
         } else if (activeShoe.variants && activeShoe.variants.length > 0 && !isNaN(Number(activeShoe.variants[0].id))) {
           targetVariantId = Number(activeShoe.variants[0].id);
-        } else if (!isNaN(Number(activeShoe.id))) {
-          targetVariantId = Number(activeShoe.id);
-        }
-
-        if (!targetVariantId) {
-          window.location.href = '/cart';
-          return;
+        } else {
+          targetVariantId = activeShoe.id;
         }
 
         const res = await fetch('/cart/add.js', {
@@ -570,8 +624,12 @@ document.addEventListener('DOMContentLoaded', () => {
           body: JSON.stringify({ id: targetVariantId, quantity: 1 })
         });
 
-        const data = await res.json();
-        Store.cartCount += 1;
+        if (res.ok) {
+          const data = await res.json();
+          Store.cartCount = data.cart ? data.cart.item_count : (Store.cartCount + 1);
+        } else {
+          Store.cartCount += 1;
+        }
 
         if (navCartBadge) {
           navCartBadge.textContent = Store.cartCount;
@@ -592,6 +650,149 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // 10. WISHLIST MANAGEMENT SYSTEM
+  function getWishlist() {
+    try {
+      return JSON.parse(localStorage.getItem('ssense_wishlist') || '[]');
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function isProductWishlisted(id) {
+    const list = getWishlist();
+    return list.some(item => String(item) === String(id));
+  }
+
+  function updateWishlistIconState(btn, isWishlisted) {
+    if (!btn) return;
+    const svg = btn.querySelector('svg');
+    if (isWishlisted) {
+      btn.classList.add('bg-red-50', 'border-red-500', 'text-red-600');
+      if (svg) {
+        svg.setAttribute('fill', 'currentColor');
+        svg.setAttribute('stroke', 'currentColor');
+      }
+    } else {
+      btn.classList.remove('bg-red-50', 'border-red-500', 'text-red-600');
+      if (svg) {
+        svg.setAttribute('fill', 'none');
+        svg.setAttribute('stroke', 'currentColor');
+      }
+    }
+  }
+
+  function updateAllWishlistUI() {
+    const list = getWishlist();
+    const navWishlistBadge = document.getElementById('nav-wishlist-badge');
+    if (navWishlistBadge) {
+      if (list.length > 0) {
+        navWishlistBadge.textContent = list.length;
+        navWishlistBadge.classList.remove('hidden');
+      } else {
+        navWishlistBadge.classList.add('hidden');
+      }
+    }
+
+    // Highlight all matching buttons
+    document.querySelectorAll('[data-wishlist-id]').forEach(btn => {
+      const id = btn.getAttribute('data-wishlist-id');
+      updateWishlistIconState(btn, isProductWishlisted(id));
+    });
+
+    renderWishlistPage();
+  }
+
+  window.toggleWishlist = function(productId) {
+    let list = getWishlist();
+    const strId = String(productId);
+    const index = list.findIndex(item => String(item) === strId);
+
+    if (index > -1) {
+      list.splice(index, 1);
+    } else {
+      list.push(productId);
+    }
+
+    localStorage.setItem('ssense_wishlist', JSON.stringify(list));
+    updateAllWishlistUI();
+  };
+
+  // Render Wishlist Page Items if on /wishlist
+  function renderWishlistPage() {
+    const container = document.getElementById('wishlist-items-container');
+    const emptyState = document.getElementById('wishlist-empty-state');
+    const countText = document.getElementById('wishlist-count-text');
+    if (!container) return;
+
+    const wishlistedIds = getWishlist();
+    if (countText) {
+      countText.textContent = `${wishlistedIds.length} ${wishlistedIds.length === 1 ? 'ITEM' : 'ITEMS'}`;
+    }
+
+    if (wishlistedIds.length === 0) {
+      container.innerHTML = '';
+      if (emptyState) emptyState.classList.remove('hidden');
+      return;
+    }
+
+    if (emptyState) emptyState.classList.add('hidden');
+    container.innerHTML = '';
+
+    wishlistedIds.forEach(id => {
+      const shoe = Store.shoes.find(s => String(s.id) === String(id));
+      if (!shoe) return;
+
+      const card = document.createElement('div');
+      card.className = 'shoe-card-item flex flex-col justify-between p-6 bg-white rounded-2xl border border-[#dedede] relative group shadow-sm';
+      card.innerHTML = `
+        <button 
+          type="button" 
+          class="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-white border border-[#dedede] hover:border-black flex items-center justify-center text-red-600 transition-colors shadow-sm"
+          onclick="window.toggleWishlist('${shoe.id}')"
+          title="Remove from Wishlist"
+        >
+          ✕
+        </button>
+        <div class="relative w-full aspect-[4/3] flex items-center justify-center p-4 overflow-hidden cursor-pointer" onclick="window.showProductDetail('${shoe.id}')">
+          <img src="${shoe.image_primary}" alt="${shoe.title}" class="w-full h-full object-contain p-2 hover:scale-105 transition-transform duration-300" />
+        </div>
+        <div class="pt-4 border-t border-[#f0f0f0] mt-2 space-y-3">
+          <div class="flex justify-between items-start gap-2">
+            <div>
+              <h3 class="text-sm font-black uppercase tracking-tight text-[#111111] leading-snug cursor-pointer" onclick="window.showProductDetail('${shoe.id}')">${shoe.title}</h3>
+              <p class="text-xs font-semibold uppercase text-[#777777] mt-0.5">${shoe.brand}</p>
+            </div>
+            <span class="text-sm font-black text-[#111111] whitespace-nowrap">${shoe.price_formatted || '$' + (shoe.price/100).toFixed(2)}</span>
+          </div>
+          <button 
+            type="button"
+            class="w-full py-2.5 bg-[#111111] text-white hover:bg-black rounded-lg text-xs font-bold uppercase transition-colors flex items-center justify-center gap-2"
+            onclick="window.addWishlistItemToCart('${shoe.id}')"
+          >
+            <span>ADD TO BAG</span>
+            <span>→</span>
+          </button>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  window.addWishlistItemToCart = async function(id) {
+    try {
+      const res = await fetch('/cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: id, quantity: 1 })
+      });
+      window.location.href = '/cart';
+    } catch (e) {
+      window.location.href = '/cart';
+    }
+  };
+
   // Initial Load
+  updateAllWishlistUI();
   renderCarousel('next');
 });
