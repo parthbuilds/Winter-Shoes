@@ -4,22 +4,22 @@
   - Desktop: Collections Sidebar on left margin, 3D Depth Floating Carousel, Sticky Details Frame
 {% endcomment %}
 
-{% assign selected_collection = collections[section.settings.collection] %}
-{% if selected_collection == blank or selected_collection.products_count == 0 %}
-  {% assign selected_collection = collections['shoes'] %}
+{% assign store_products = collections.all.products %}
+{% if store_products == blank or store_products.size == 0 %}
+  {% assign store_products = collections['shoes'].products %}
 {% endif %}
-{% if selected_collection == blank or selected_collection.products_count == 0 %}
-  {% assign selected_collection = collections['winter-shoes'] %}
+{% if store_products == blank or store_products.size == 0 %}
+  {% assign store_products = collections['winter-shoes'].products %}
 {% endif %}
-{% if selected_collection == blank or selected_collection.products_count == 0 %}
-  {% assign selected_collection = collections.all %}
+{% if store_products == blank or store_products.size == 0 %}
+  {% assign store_products = collections[section.settings.collection].products %}
 {% endif %}
 
 <!-- Embedded High-Speed Footwear Data Island with Dynamic Shopify Products & Variants -->
 <script id="footwear-collection-data" type="application/json">
 [
-  {% if selected_collection != blank and selected_collection.products_count > 0 %}
-    {% for product in selected_collection.products %}
+  {% if store_products != blank and store_products.size > 0 %}
+    {% for product in store_products %}
       {% assign formatted_price = product.price | money %}
       {% assign product_subtitle = product.title | append: ' | ' | append: formatted_price %}
       {
@@ -56,43 +56,168 @@
   {% else %}
     {
       "id": "1",
-      "brand": "GUCCI",
-      "title": "Crystals Flashtrek Sneakers",
-      "subtitle": "Crystals Flashtrek Sneakers | $1,590",
+      "brand": "Winter Shoes",
+      "title": "Shoe 1",
+      "subtitle": "Shoe 1 | $20.00",
       "category": "sneakers",
-      "price": 159000,
-      "price_formatted": "$1,590",
-      "material": "Technical knit, suede & sculpted responsive sole",
+      "price": 2000,
+      "price_formatted": "$20.00",
       "description": "Low-top panelled mesh and technical canvas sneakers in navy and off-white. Ergonomic cushioned footbed with responsive shock-absorbing midsole.",
       "image_primary": "{{ '70.png' | asset_url }}",
       "image_secondary": "{{ '74.png' | asset_url }}",
       "gallery": ["{{ '70.png' | asset_url }}", "{{ '74.png' | asset_url }}"],
-      "collections": ["all"],
-      "variants": [
-        {"id": "v1", "title": "Size 39", "price": "$1,590"},
-        {"id": "v2", "title": "Size 40", "price": "$1,590"},
-        {"id": "v3", "title": "Size 41", "price": "$1,590"},
-        {"id": "v4", "title": "Size 42", "price": "$1,590"}
-      ]
+      "collections": ["all", "shoes"],
+      "variants": [{"id": "v1", "title": "Size 40", "price": "$20.00"}]
     },
     {
       "id": "2",
-      "brand": "BALENCIAGA",
-      "title": "Chunky Lug Suede Loafers",
-      "subtitle": "Chunky Lug Suede Loafers | $975",
-      "category": "loafers",
-      "price": 97500,
-      "price_formatted": "$975",
-      "material": "Oiled Tuscan suede with sculpted tread sole",
-      "description": "Handcrafted low-top derbies in wheat tan suede. Heavy-duty lug sole with stacked block heel.",
+      "brand": "Winter Shoes",
+      "title": "Shoe 2",
+      "subtitle": "Shoe 2 | $30.00",
+      "category": "sneakers",
+      "price": 3000,
+      "price_formatted": "$30.00",
+      "description": "Handcrafted Italian buffed suede platform shoes in camel tan. Molded cleated rubber lug sole.",
       "image_primary": "{{ '71.png' | asset_url }}",
+      "image_secondary": "{{ '75.png' | asset_url }}",
+      "gallery": ["{{ '71.png' | asset_url }}", "{{ '75.png' | asset_url }}"],
+      "collections": ["all", "shoes"],
+      "variants": [{"id": "v2", "title": "Size 41", "price": "$30.00"}]
+    },
+    {
+      "id": "3",
+      "brand": "Winter Shoes",
+      "title": "Shoe 3",
+      "subtitle": "Shoe 3 | $25.00",
+      "category": "sneakers",
+      "price": 2500,
+      "price_formatted": "$25.00",
+      "description": "Low-top buffed leather sneakers in rich cognac brown.",
+      "image_primary": "{{ '72.png' | asset_url }}",
+      "image_secondary": "{{ '70.png' | asset_url }}",
+      "gallery": ["{{ '72.png' | asset_url }}", "{{ '70.png' | asset_url }}"],
+      "collections": ["all", "shoes"],
+      "variants": [{"id": "v3", "title": "Size 42", "price": "$25.00"}]
+    },
+    {
+      "id": "4",
+      "brand": "Winter Shoes",
+      "title": "Shoe 4",
+      "subtitle": "Shoe 4 | $35.00",
+      "category": "shoes",
+      "price": 3500,
+      "price_formatted": "$35.00",
+      "description": "Derby-style wingtip brogues in charcoal grey suede.",
+      "image_primary": "{{ '73.png' | asset_url }}",
+      "image_secondary": "{{ '71.png' | asset_url }}",
+      "gallery": ["{{ '73.png' | asset_url }}", "{{ '71.png' | asset_url }}"],
+      "collections": ["all", "shoes"],
+      "variants": [{"id": "v4", "title": "Size 43", "price": "$35.00"}]
+    },
+    {
+      "id": "5",
+      "brand": "Winter Shoes",
+      "title": "Shoe 5",
+      "subtitle": "Shoe 5 | $40.00",
+      "category": "sneakers",
+      "price": 4000,
+      "price_formatted": "$40.00",
+      "description": "Low-top full-grain calf leather sneakers in deep navy blue.",
+      "image_primary": "{{ '74.png' | asset_url }}",
+      "image_secondary": "{{ '72.png' | asset_url }}",
+      "gallery": ["{{ '74.png' | asset_url }}", "{{ '72.png' | asset_url }}"],
+      "collections": ["all", "shoes"],
+      "variants": [{"id": "v5", "title": "Size 44", "price": "$40.00"}]
+    },
+    {
+      "id": "6",
+      "brand": "Winter Shoes",
+      "title": "Shoe 6",
+      "subtitle": "Shoe 6 | $30.00",
+      "category": "uncategorized",
+      "price": 3000,
+      "price_formatted": "$30.00",
+      "description": "Casual low-top grey and blue canvas deck shoes.",
+      "image_primary": "{{ '72.png' | asset_url }}",
+      "image_secondary": "{{ '70.png' | asset_url }}",
+      "gallery": ["{{ '72.png' | asset_url }}", "{{ '70.png' | asset_url }}"],
+      "collections": ["all", "shoes"],
+      "variants": [{"id": "v6", "title": "Size 42", "price": "$30.00"}]
+    },
+    {
+      "id": "7",
+      "brand": "Winter Shoes",
+      "title": "Slider 1",
+      "subtitle": "Slider 1 | $25.00",
+      "category": "sandals",
+      "price": 2500,
+      "price_formatted": "$25.00",
+      "description": "Ergonomic leather sliders in stone and denim canvas.",
+      "image_primary": "{{ '75.png' | asset_url }}",
       "image_secondary": "{{ '73.png' | asset_url }}",
-      "gallery": ["{{ '71.png' | asset_url }}", "{{ '73.png' | asset_url }}"],
-      "collections": ["all"],
-      "variants": [
-        {"id": "v5", "title": "Size 40", "price": "$975"},
-        {"id": "v6", "title": "Size 41", "price": "$975"}
-      ]
+      "gallery": ["{{ '75.png' | asset_url }}", "{{ '73.png' | asset_url }}"],
+      "collections": ["all", "sliders"],
+      "variants": [{"id": "v7", "title": "Size 40", "price": "$25.00"}]
+    },
+    {
+      "id": "8",
+      "brand": "Winter Shoes",
+      "title": "Slider 2",
+      "subtitle": "Slider 2 | $28.00",
+      "category": "sandals",
+      "price": 2800,
+      "price_formatted": "$28.00",
+      "description": "Sleek low-profile technical sliders featuring soft suede straps.",
+      "image_primary": "{{ '73.png' | asset_url }}",
+      "image_secondary": "{{ '71.png' | asset_url }}",
+      "gallery": ["{{ '73.png' | asset_url }}", "{{ '71.png' | asset_url }}"],
+      "collections": ["all", "sliders"],
+      "variants": [{"id": "v8", "title": "Size 41", "price": "$28.00"}]
+    },
+    {
+      "id": "9",
+      "brand": "Winter Shoes",
+      "title": "Slider 3",
+      "subtitle": "Slider 3 | $32.00",
+      "category": "sandals",
+      "price": 3200,
+      "price_formatted": "$32.00",
+      "description": "Comfortable cushioned pool slides with embossed logo top strap.",
+      "image_primary": "{{ '75.png' | asset_url }}",
+      "image_secondary": "{{ '70.png' | asset_url }}",
+      "gallery": ["{{ '75.png' | asset_url }}", "{{ '70.png' | asset_url }}"],
+      "collections": ["all", "sliders"],
+      "variants": [{"id": "v9", "title": "Size 42", "price": "$32.00"}]
+    },
+    {
+      "id": "10",
+      "brand": "Winter Shoes",
+      "title": "Slider 4",
+      "subtitle": "Slider 4 | $35.00",
+      "category": "sandals",
+      "price": 3500,
+      "price_formatted": "$35.00",
+      "description": "Luxury Italian suede slides with padded footbed.",
+      "image_primary": "{{ '71.png' | asset_url }}",
+      "image_secondary": "{{ '74.png' | asset_url }}",
+      "gallery": ["{{ '71.png' | asset_url }}", "{{ '74.png' | asset_url }}"],
+      "collections": ["all", "sliders"],
+      "variants": [{"id": "v10", "title": "Size 43", "price": "$35.00"}]
+    },
+    {
+      "id": "11",
+      "brand": "Winter Shoes",
+      "title": "Slider 5",
+      "subtitle": "Slider 5 | $40.00",
+      "category": "sandals",
+      "price": 4000,
+      "price_formatted": "$40.00",
+      "description": "Premium leather and canvas sliders with double strap closure.",
+      "image_primary": "{{ '70.png' | asset_url }}",
+      "image_secondary": "{{ '75.png' | asset_url }}",
+      "gallery": ["{{ '70.png' | asset_url }}", "{{ '75.png' | asset_url }}"],
+      "collections": ["all", "sliders"],
+      "variants": [{"id": "v11", "title": "Size 44", "price": "$40.00"}]
     }
   {% endif %}
 ]

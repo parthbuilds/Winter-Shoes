@@ -5,15 +5,15 @@
   - Dynamic Shopify Product Cards with Brand, Title, Price, and Image Hover State
 {% endcomment %}
 
-{% assign grid_collection = collections[section.settings.collection] %}
-{% if grid_collection == blank or grid_collection.products_count == 0 %}
-  {% assign grid_collection = collections['shoes'] %}
+{% assign grid_products = collections.all.products %}
+{% if grid_products == blank or grid_products.size == 0 %}
+  {% assign grid_products = collections['shoes'].products %}
 {% endif %}
-{% if grid_collection == blank or grid_collection.products_count == 0 %}
-  {% assign grid_collection = collections['winter-shoes'] %}
+{% if grid_products == blank or grid_products.size == 0 %}
+  {% assign grid_products = collections['winter-shoes'].products %}
 {% endif %}
-{% if grid_collection == blank or grid_collection.products_count == 0 %}
-  {% assign grid_collection = collections.all %}
+{% if grid_products == blank or grid_products.size == 0 %}
+  {% assign grid_products = collections[section.settings.collection].products %}
 {% endif %}
 
 <section 
@@ -28,7 +28,7 @@
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-6 border-b border-[#dedede]">
       <div>
         <h2 class="text-3xl md:text-4xl font-black uppercase tracking-tight font-sans text-[#111111]">
-          {{ grid_collection.title | default: 'FOOTWEAR COLLECTION' }}
+          FOOTWEAR COLLECTION
         </h2>
         <p class="text-xs font-sans font-semibold text-[#777777] mt-1">
           Showing luxury footwear curated for your atelier
@@ -52,8 +52,8 @@
     <!-- 3-Column Responsive Product Card Grid -->
     <div id="product-cards-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
       
-      {% if grid_collection != blank and grid_collection.products_count > 0 %}
-        {% for product in grid_collection.products %}
+      {% if grid_products != blank and grid_products.size > 0 %}
+        {% for product in grid_products %}
           {% assign img_1 = product.featured_image %}
           {% assign img_2 = product.images[1] | default: product.featured_image %}
           
