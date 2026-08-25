@@ -285,19 +285,20 @@ document.addEventListener('DOMContentLoaded', () => {
       matches = [...Store.shoes];
     } else {
       const sliderTerms = ['sliders', 'slider', 'slides', 'slide', 'sandals', 'sandal'];
-      const isSliderTarget = sliderTerms.some(t => target.includes(t) || t.includes(target));
+      const isSliderTarget = sliderTerms.some(t => target === t || target.includes(t) || t.includes(target));
 
       matches = Store.shoes.filter(s => {
         const cat = (s.category || '').toLowerCase();
         const title = (s.title || '').toLowerCase();
         const cols = (s.collections || []).map(c => (c || '').toLowerCase());
+        const isSliderItem = sliderTerms.some(term => title.includes(term) || cat.includes(term) || cols.some(c => c.includes(term)));
 
         if (isSliderTarget) {
-          return sliderTerms.some(term => cat.includes(term) || title.includes(term) || cols.some(c => c.includes(term)));
+          return isSliderItem;
         }
 
         if (target === 'shoes' || target === 'shoe') {
-          return true; // 'shoes' collection covers all footwear items
+          return !isSliderItem;
         }
 
         const targetSingular = target.endsWith('s') ? target.slice(0, -1) : target;
@@ -328,16 +329,23 @@ document.addEventListener('DOMContentLoaded', () => {
       const cCat = (card.dataset.category || '').toLowerCase();
       const cId = card.dataset.productId;
       const cardShoe = Store.shoes.find(s => String(s.id) === String(cId));
-      
+      const sliderTerms = ['sliders', 'slider', 'slides', 'slide', 'sandals', 'sandal'];
+      const isSliderCard = (cardShoe && sliderTerms.some(t => cardShoe.title.toLowerCase().includes(t) || (cardShoe.collections || []).some(c => c.includes(t)))) || sliderTerms.some(t => cCat.includes(t));
+
       let isMatch = false;
-      if (target === 'all' || target === 'shoes') {
+      if (target === 'all') {
         isMatch = true;
-      } else if (['sliders', 'slider', 'slides', 'slide', 'sandals', 'sandal'].includes(target)) {
-        isMatch = ['sliders', 'slider', 'slides', 'slide', 'sandals', 'sandal'].some(t => 
-          cCat.includes(t) || (cardShoe && (cardShoe.title.toLowerCase().includes(t) || (cardShoe.collections || []).includes(t)))
-        );
+      } else if (target === 'shoes' || target === 'shoe') {
+        isMatch = !isSliderCard;
+      } else if (sliderTerms.some(t => target.includes(t) || t.includes(target))) {
+        isMatch = isSliderCard;
       } else {
-        isMatch = cCat.includes(target) || (cardShoe && (cardShoe.title.toLowerCase().includes(target) || (cardShoe.collections || []).includes(target)));
+        const targetSingular = target.endsWith('s') ? target.slice(0, -1) : target;
+        isMatch = cCat.includes(target) || cCat.includes(targetSingular) || (cardShoe && (
+          cardShoe.title.toLowerCase().includes(target) || 
+          cardShoe.title.toLowerCase().includes(targetSingular) || 
+          (cardShoe.collections || []).some(c => c.includes(target) || c.includes(targetSingular))
+        ));
       }
 
       card.style.display = isMatch ? 'flex' : 'none';
