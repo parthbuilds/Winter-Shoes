@@ -1,0 +1,182 @@
+{% comment %}
+  Template: Contact Us Page
+  SSENSE Luxury Footwear Atelier Concierge Experience
+{% endcomment %}
+
+<div class="w-full min-h-[85vh] bg-[#ededed] text-[#111111] py-12 px-4 md:px-12">
+  <div class="max-w-[1200px] mx-auto space-y-12">
+    
+    <!-- Top Heading -->
+    <div class="pb-6 border-b border-[#dedede] space-y-2">
+      <h1 class="text-3xl md:text-5xl font-black uppercase tracking-tight font-sans">
+        CLIENT SERVICES & CONCIERGE
+      </h1>
+      <p class="text-xs font-semibold text-[#777777] uppercase tracking-wider">
+        Our atelier team is available 24/7 for size guidance, order updates, and tailored concierge inquiries.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+      
+      <!-- Contact Form (Left 7 Cols) -->
+      <div class="lg:col-span-7 bg-white p-8 md:p-10 rounded-3xl border border-[#dedede] shadow-sm space-y-6">
+        <div>
+          <h2 class="text-xl font-black uppercase tracking-tight text-[#111111]">
+            SEND AN INQUIRY
+          </h2>
+          <p class="text-xs text-[#777777] mt-1 font-medium">
+            Fill in the details below and an Atelier Client Advisor will respond within 2 hours.
+          </p>
+        </div>
+
+        <form id="contact-form" onsubmit="event.preventDefault(); window.handleContactSubmit();" class="space-y-5">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div>
+              <label for="contact-name" class="block text-xs font-bold text-[#111111] uppercase tracking-wider mb-1">
+                FULL NAME *
+              </label>
+              <input 
+                type="text" 
+                id="contact-name" 
+                required 
+                placeholder="JEAN DUPONT"
+                class="w-full px-4 py-3 bg-[#f9f9f9] border border-[#dedede] focus:border-black rounded-xl text-xs font-semibold focus:outline-none transition-colors"
+              />
+            </div>
+
+            <div>
+              <label for="contact-email" class="block text-xs font-bold text-[#111111] uppercase tracking-wider mb-1">
+                EMAIL ADDRESS *
+              </label>
+              <input 
+                type="email" 
+                id="contact-email" 
+                required 
+                placeholder="CLIENT@DOMAIN.COM"
+                class="w-full px-4 py-3 bg-[#f9f9f9] border border-[#dedede] focus:border-black rounded-xl text-xs font-semibold focus:outline-none transition-colors"
+              />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div>
+              <label for="contact-order" class="block text-xs font-bold text-[#111111] uppercase tracking-wider mb-1">
+                ORDER REFERENCE (OPTIONAL)
+              </label>
+              <input 
+                type="text" 
+                id="contact-order" 
+                placeholder="#SS-89410"
+                class="w-full px-4 py-3 bg-[#f9f9f9] border border-[#dedede] focus:border-black rounded-xl text-xs font-semibold focus:outline-none transition-colors"
+              />
+            </div>
+
+            <div>
+              <label for="contact-subject" class="block text-xs font-bold text-[#111111] uppercase tracking-wider mb-1">
+                INQUIRY TOPIC *
+              </label>
+              <select 
+                id="contact-subject"
+                class="w-full px-4 py-3 bg-[#f9f9f9] border border-[#dedede] focus:border-black rounded-xl text-xs font-bold focus:outline-none transition-colors cursor-pointer"
+              >
+                <option value="size">Size & Sizing Consultation</option>
+                <option value="order">Order & Express Shipping Status</option>
+                <option value="returns">Complimentary Returns & Exchange</option>
+                <option value="bespoke">Atelier Special Request</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label for="contact-message" class="block text-xs font-bold text-[#111111] uppercase tracking-wider mb-1">
+              MESSAGE *
+            </label>
+            <textarea 
+              id="contact-message" 
+              rows="5" 
+              required 
+              placeholder="How can our Atelier Concierge assist you today?"
+              class="w-full px-4 py-3 bg-[#f9f9f9] border border-[#dedede] focus:border-black rounded-xl text-xs font-medium focus:outline-none transition-colors resize-none"
+            ></textarea>
+          </div>
+
+          <button 
+            type="submit" 
+            id="contact-submit-btn"
+            class="w-full py-4 bg-[#111111] text-white hover:bg-black rounded-xl text-xs font-bold tracking-widest uppercase transition-all shadow-md cursor-pointer flex items-center justify-center gap-2"
+          >
+            <span>SUBMIT INQUIRY</span>
+            <span>→</span>
+          </button>
+        </form>
+
+        <div id="contact-success-msg" class="hidden p-4 bg-emerald-50 border border-emerald-300 rounded-xl text-xs font-bold text-emerald-800 text-center">
+          ✓ Thank you! Your inquiry has been sent to our Atelier Concierge team. We will respond shortly.
+        </div>
+      </div>
+
+      <!-- Atelier Concierge Info (Right 5 Cols) -->
+      <div class="lg:col-span-5 space-y-6">
+        <div class="p-8 bg-white rounded-3xl border border-[#dedede] space-y-6">
+          <h2 class="text-lg font-black uppercase tracking-tight text-[#111111] pb-3 border-b border-[#dedede]">
+            ATELIER DIRECT CONTACT
+          </h2>
+
+          <div class="space-y-5 text-xs">
+            <div class="flex items-start space-x-3">
+              <span class="text-base">✉️</span>
+              <div>
+                <span class="block font-bold text-[#111111] uppercase">EMAIL CONCIERGE</span>
+                <a href="mailto:concierge@ssensefootwear.com" class="text-[#777777] hover:text-black font-semibold">concierge@ssensefootwear.com</a>
+              </div>
+            </div>
+
+            <div class="flex items-start space-x-3">
+              <span class="text-base">📞</span>
+              <div>
+                <span class="block font-bold text-[#111111] uppercase">DIRECT TOLL-FREE PHONE</span>
+                <span class="text-[#777777] font-semibold">+1 (800) 555-0199</span>
+                <span class="block text-[11px] text-[#999999] mt-0.5">24/7 Multilingual Support</span>
+              </div>
+            </div>
+
+            <div class="flex items-start space-x-3">
+              <span class="text-base">📍</span>
+              <div>
+                <span class="block font-bold text-[#111111] uppercase">FLAGSHIP ATELIER</span>
+                <span class="text-[#777777] font-semibold">438 Rue Saint-Pierre, Old Montreal</span>
+                <span class="block text-[#777777] font-semibold">Quebec H2Y 2M5, Canada</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-8 bg-[#111111] text-white rounded-3xl space-y-4 shadow-lg">
+          <h3 class="text-sm font-black uppercase tracking-widest text-white">
+            EXPRESS CLIENT ADVISORY
+          </h3>
+          <p class="text-xs text-gray-300 leading-relaxed">
+            Need urgent sizing verification or courier tracking? Call our direct line or launch live chat anytime.
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<script>
+  window.handleContactSubmit = function() {
+    const btn = document.getElementById('contact-submit-btn');
+    const msg = document.getElementById('contact-success-msg');
+    if (btn) {
+      btn.innerHTML = `<span>SENDING...</span>`;
+      btn.disabled = true;
+    }
+    setTimeout(() => {
+      if (btn) btn.classList.add('hidden');
+      if (msg) msg.classList.remove('hidden');
+    }, 600);
+  };
+</script>

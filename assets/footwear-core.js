@@ -285,7 +285,7 @@ document.addEventListener('DOMContentLoaded', () => {
       matches = [...Store.shoes];
     } else {
       const sliderTerms = ['sliders', 'slider', 'slides', 'slide', 'sandals', 'sandal'];
-      const isSliderTarget = sliderTerms.includes(target);
+      const isSliderTarget = sliderTerms.some(t => target.includes(t) || t.includes(target));
 
       matches = Store.shoes.filter(s => {
         const cat = (s.category || '').toLowerCase();
@@ -293,14 +293,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const cols = (s.collections || []).map(c => (c || '').toLowerCase());
 
         if (isSliderTarget) {
-          return sliderTerms.some(term => cat.includes(term) || title.includes(term) || cols.includes(term));
+          return sliderTerms.some(term => cat.includes(term) || title.includes(term) || cols.some(c => c.includes(term)));
         }
 
-        if (target === 'shoes') {
+        if (target === 'shoes' || target === 'shoe') {
           return true; // 'shoes' collection covers all footwear items
         }
 
-        return cols.includes(target) || cat === target || cat.includes(target) || title.includes(target);
+        const targetSingular = target.endsWith('s') ? target.slice(0, -1) : target;
+        return (
+          cols.includes(target) || cols.includes(targetSingular) || cols.some(c => c.includes(target) || c.includes(targetSingular)) ||
+          cat === target || cat === targetSingular || cat.includes(target) || cat.includes(targetSingular) ||
+          title.includes(target) || title.includes(targetSingular)
+        );
       });
     }
 
