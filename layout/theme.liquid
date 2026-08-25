@@ -78,13 +78,8 @@
           <a href="#all" data-filter-collection="all" class="sidebar-subcat block py-1 text-[#111111] font-bold">
             <span class="underline">All Footwear</span>
           </a>
-          <a href="#shoes" data-filter-collection="shoes" data-filter-category="shoes" class="sidebar-subcat block py-1 text-[#777777] hover:text-[#111111]">Shoes</a>
-          <a href="#sliders" data-filter-collection="sliders" data-filter-category="sliders" class="sidebar-subcat block py-1 text-[#777777] hover:text-[#111111]">Sliders</a>
-          <a href="#sneakers" data-filter-collection="sneakers" data-filter-category="sneakers" class="sidebar-subcat block py-1 text-[#777777] hover:text-[#111111]">Sneakers</a>
-          <a href="#loafers" data-filter-collection="loafers" data-filter-category="loafers" class="sidebar-subcat block py-1 text-[#777777] hover:text-[#111111]">Loafers</a>
-          <a href="#boots" data-filter-collection="boots" data-filter-category="boots" class="sidebar-subcat block py-1 text-[#777777] hover:text-[#111111]">Boots</a>
           {% for col in collections %}
-            {% unless col.handle == 'frontpage' or col.handle == 'shoes' or col.handle == 'sliders' or col.handle == 'sneakers' or col.handle == 'loafers' or col.handle == 'boots' %}
+            {% unless col.handle == 'frontpage' %}
               <a href="{{ col.url }}" data-filter-collection="{{ col.handle }}" class="sidebar-subcat block py-1 text-[#777777] hover:text-[#111111]">
                 {{ col.title }}
               </a>

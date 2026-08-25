@@ -109,10 +109,21 @@ document.addEventListener('DOMContentLoaded', () => {
   if (mobileDrawerOverlay) mobileDrawerOverlay.addEventListener('click', closeMobileDrawer);
 
   // 4. 3-SHOE DEPTH CAROUSEL RENDER & TRANSITIONS
+  // 4. 3-SHOE DEPTH CAROUSEL RENDER & TRANSITIONS
   function renderCarousel(direction = 'next') {
-    if (!Store.filteredShoes || Store.filteredShoes.length === 0) return;
+    if (!Store.filteredShoes) return;
 
     const total = Store.filteredShoes.length;
+    if (total === 0) {
+      if (brandHeading) brandHeading.textContent = "COLLECTION EMPTY";
+      if (productSubtitle) productSubtitle.textContent = "No products found in this collection.";
+      if (imgCenter) imgCenter.style.opacity = '0';
+      if (slotLeft) slotLeft.style.opacity = '0';
+      if (slotRight) slotRight.style.opacity = '0';
+      return;
+    }
+
+    if (Store.currentIndex >= total) Store.currentIndex = 0;
     const current = Store.filteredShoes[Store.currentIndex];
     const prevIdx = (Store.currentIndex - 1 + total) % total;
     const nextIdx = (Store.currentIndex + 1) % total;
@@ -134,16 +145,33 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (imgCenter && current) {
+      imgCenter.style.opacity = '1';
       imgCenter.src = current.image_primary;
       imgCenter.alt = current.title;
     }
-    if (imgLeft && prevShoe) {
-      imgLeft.src = prevShoe.image_primary;
-      imgLeft.alt = prevShoe.title;
+
+    if (slotLeft && imgLeft) {
+      if (total >= 3) {
+        slotLeft.style.opacity = '0.65';
+        slotLeft.style.pointerEvents = 'auto';
+        imgLeft.src = prevShoe.image_primary;
+        imgLeft.alt = prevShoe.title;
+      } else {
+        slotLeft.style.opacity = '0';
+        slotLeft.style.pointerEvents = 'none';
+      }
     }
-    if (imgRight && nextShoe) {
-      imgRight.src = nextShoe.image_primary;
-      imgRight.alt = nextShoe.title;
+
+    if (slotRight && imgRight) {
+      if (total >= 2) {
+        slotRight.style.opacity = '0.65';
+        slotRight.style.pointerEvents = 'auto';
+        imgRight.src = nextShoe.image_primary;
+        imgRight.alt = nextShoe.title;
+      } else {
+        slotRight.style.opacity = '0';
+        slotRight.style.pointerEvents = 'none';
+      }
     }
 
     if (brandHeading && current) {
@@ -276,9 +304,18 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    Store.filteredShoes = matches.length > 0 ? matches : [...Store.shoes];
-
+    Store.filteredShoes = matches;
     Store.currentIndex = 0;
+
+    // Reset view from detail if active
+    if (Store.currentView === 'detail') {
+      if (inPlaceDetailHud) inPlaceDetailHud.classList.add('hidden');
+      if (inPlaceScrollGallery) inPlaceScrollGallery.classList.add('hidden');
+      if (heroCarouselMeta) heroCarouselMeta.classList.remove('hidden');
+      if (globalBackBtn) globalBackBtn.classList.add('hidden');
+      Store.currentView = 'carousel';
+    }
+
     renderCarousel('next');
 
     // Filter cards in grid view
