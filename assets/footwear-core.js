@@ -878,6 +878,42 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
+  // Header Search Button Action
+  const navSearchBtn = document.getElementById('nav-search-btn');
+  if (navSearchBtn) {
+    navSearchBtn.addEventListener('click', () => {
+      if (window.innerWidth < 1024) {
+        openMobileDrawer();
+        const drawerSearch = document.getElementById('mobile-drawer-search');
+        if (drawerSearch) setTimeout(() => drawerSearch.focus(), 320);
+      } else {
+        const targetSearch = Store.currentView === 'grid' 
+          ? document.getElementById('grid-search-input') 
+          : document.getElementById('hero-search-input');
+        if (targetSearch) {
+          targetSearch.focus();
+          targetSearch.classList.add('ring-2', 'ring-black');
+          setTimeout(() => targetSearch.classList.remove('ring-2', 'ring-black'), 1500);
+        }
+      }
+    });
+  }
+
+  // Contact Form Submission Handler
+  window.handleContactSubmit = function() {
+    const form = document.getElementById('contact-form');
+    if (form) {
+      form.innerHTML = `
+        <div class="p-8 bg-emerald-50 border border-emerald-300 rounded-2xl text-center space-y-3">
+          <div class="text-3xl text-emerald-800">✓</div>
+          <h3 class="text-lg font-black text-emerald-950 uppercase">INQUIRY RECEIVED</h3>
+          <p class="text-xs text-emerald-800 max-w-md mx-auto">Thank you for contacting our client services atelier. A dedicated advisor will review your request and reply via email within 2 hours.</p>
+          <a href="/" class="inline-block px-6 py-2.5 bg-[#111111] text-white rounded-xl text-xs font-bold tracking-widest uppercase mt-4 hover:bg-black/80 transition-colors">RETURN TO BOUTIQUE</a>
+        </div>
+      `;
+    }
+  };
+
   // Initial Load
   updateAllWishlistUI();
   renderCarousel('next');
