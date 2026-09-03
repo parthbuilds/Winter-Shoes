@@ -79,8 +79,8 @@
 
   <!-- Right: Wishlist, Blog, Search, Bag, Language & View Switcher -->
   <div class="flex items-center justify-end space-x-3 md:space-x-5 text-xs font-sans tracking-widest uppercase z-20">
-    <a href="/wishlist" class="relative font-semibold text-[#777777] hover:text-[#111111] transition-colors flex items-center gap-1">
-      <span>WISHLIST</span>
+    <a href="/wishlist" class="relative font-semibold text-[#777777] hover:text-[#111111] transition-colors flex items-center gap-1.5 whitespace-nowrap">
+      <span class="tracking-wider text-[11px] sm:text-xs">WISHLIST</span>
       <span id="nav-wishlist-badge" class="hidden bg-[#111111] text-white text-[9px] w-3.5 h-3.5 rounded-full flex items-center justify-center font-sans font-bold">
         0
       </span>
@@ -103,8 +103,8 @@
       </span>
     </a>
 
-    <!-- View Switcher Group -->
-    <div class="view-switcher-group pl-1 md:pl-3 border-l border-[#dedede]">
+    <!-- View Switcher Group: Intact on Desktop (md:flex), hidden on Mobile -->
+    <div class="hidden md:flex view-switcher-group pl-1 md:pl-3 border-l border-[#dedede]">
       <button 
         id="top-view-grid-btn"
         type="button" 

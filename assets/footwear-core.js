@@ -225,10 +225,23 @@ document.addEventListener('DOMContentLoaded', () => {
       isDragging = false;
     });
 
+    let startY = 0;
     heroCarouselStage.addEventListener('touchstart', (e) => {
       if (Store.currentView !== 'carousel') return;
       startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
     }, { passive: true });
+
+    heroCarouselStage.addEventListener('touchmove', (e) => {
+      if (Store.currentView !== 'carousel') return;
+      const currentX = e.touches[0].clientX;
+      const currentY = e.touches[0].clientY;
+      const diffX = Math.abs(currentX - startX);
+      const diffY = Math.abs(currentY - startY);
+      if (diffX > diffY && diffX > 10) {
+        if (e.cancelable) e.preventDefault();
+      }
+    }, { passive: false });
 
     heroCarouselStage.addEventListener('touchend', (e) => {
       if (Store.currentView !== 'carousel') return;
@@ -262,6 +275,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 6. SUBCATEGORY & COLLECTION LIVE FILTERING
   function applySubcategoryFilter(targetVal) {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+
     const target = (targetVal || '').toLowerCase();
     Store.activeCategory = target;
 
@@ -394,14 +411,19 @@ document.addEventListener('DOMContentLoaded', () => {
   // 7. VIEW SWITCHING (Carousel <-> Grid View with Back Button)
   function setViewMode(mode) {
     if (mode === Store.currentView) return;
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+
     Store.previousView = Store.currentView;
     Store.currentView = mode;
 
+    const allGridBtns = document.querySelectorAll('#top-view-grid-btn, #grid-view-grid-btn, .mobile-grid-btn');
+    const allCarouselBtns = document.querySelectorAll('#top-view-carousel-btn, #grid-view-carousel-btn, .mobile-carousel-btn');
+
     if (mode === 'carousel') {
-      if (topCarouselBtn) topCarouselBtn.classList.add('active');
-      if (topGridBtn) topGridBtn.classList.remove('active');
-      if (gridCarouselBtn) gridCarouselBtn.classList.add('active');
-      if (gridGridBtn) gridGridBtn.classList.remove('active');
+      allCarouselBtns.forEach(btn => btn.classList.add('active'));
+      allGridBtns.forEach(btn => btn.classList.remove('active'));
 
       if (globalBackBtn) globalBackBtn.classList.add('hidden');
 
@@ -415,10 +437,8 @@ document.addEventListener('DOMContentLoaded', () => {
       renderCarousel('next');
 
     } else if (mode === 'grid') {
-      if (topGridBtn) topGridBtn.classList.add('active');
-      if (topCarouselBtn) topCarouselBtn.classList.remove('active');
-      if (gridGridBtn) gridGridBtn.classList.add('active');
-      if (gridCarouselBtn) gridCarouselBtn.classList.remove('active');
+      allGridBtns.forEach(btn => btn.classList.add('active'));
+      allCarouselBtns.forEach(btn => btn.classList.remove('active'));
 
       if (globalBackBtn) {
         globalBackBtn.classList.remove('hidden');
@@ -439,18 +459,30 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  if (topGridBtn) topGridBtn.addEventListener('click', () => setViewMode('grid'));
-  if (topCarouselBtn) topCarouselBtn.addEventListener('click', () => setViewMode('carousel'));
-  if (gridGridBtn) gridGridBtn.addEventListener('click', () => setViewMode('grid'));
-  if (gridCarouselBtn) gridCarouselBtn.addEventListener('click', () => setViewMode('carousel'));
+  document.querySelectorAll('#top-view-grid-btn, #grid-view-grid-btn, .mobile-grid-btn').forEach(btn => {
+    btn.addEventListener('click', () => setViewMode('grid'));
+  });
+  document.querySelectorAll('#top-view-carousel-btn, #grid-view-carousel-btn, .mobile-carousel-btn').forEach(btn => {
+    btn.addEventListener('click', () => setViewMode('carousel'));
+  });
 
   // 8. IN-PLACE DETAIL TRANSITION & DYNAMIC VARIANTS
   window.showProductDetail = function(productId) {
     const shoe = Store.shoes.find(s => String(s.id) === String(productId)) || Store.filteredShoes[Store.currentIndex] || Store.shoes[0];
     if (!shoe) return;
 
+    // Scroll to the very top so the shoe visual appears first at the top of the viewport
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+
     Store.previousView = Store.currentView;
     Store.currentView = 'detail';
+
+    const shoeIdx = Store.filteredShoes.findIndex(s => String(s.id) === String(shoe.id));
+    if (shoeIdx !== -1) {
+      Store.currentIndex = shoeIdx;
+    }
 
     if (gridSection && !gridSection.classList.contains('hidden')) {
       gridSection.classList.add('hidden');
@@ -581,6 +613,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // Back Button Action
   if (globalBackBtn) {
     globalBackBtn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+
       if (Store.currentView === 'grid') {
         setViewMode('carousel');
         return;
